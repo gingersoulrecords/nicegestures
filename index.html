@@ -3,89 +3,166 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>nicegestures</title>
+  <title>Nice Gestures - Copy-paste SVG gesture animations</title>
+  <meta name="description" content="Copy-paste SVG gesture animations for any project. No JavaScript, no Lottie files.">
   <style>
     *, *::before, *::after { box-sizing: border-box; }
+
+    :root {
+      --bg: #ffffff;
+      --bg-secondary: #f8fafc;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --accent: #0f172a;
+      --accent-text: #ffffff;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #0f172a;
+        --bg-secondary: #1e293b;
+        --text: #f1f5f9;
+        --text-muted: #94a3b8;
+        --border: #334155;
+        --accent: #f1f5f9;
+        --accent-text: #0f172a;
+      }
+    }
+
+    [data-theme="dark"] {
+      --bg: #0f172a;
+      --bg-secondary: #1e293b;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --accent: #f1f5f9;
+      --accent-text: #0f172a;
+    }
+
     body {
       margin: 0;
       font-family: system-ui, -apple-system, sans-serif;
-      background: #fff;
-      color: #0f172a;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
     }
 
-    /* Layout */
-    .layout {
-      display: flex;
-      min-height: 100vh;
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 4rem 1.5rem 2rem;
+      max-width: 640px;
+      margin: 0 auto;
     }
-
-    /* Sidebar */
-    .sidebar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 220px;
-      height: 100vh;
-      padding: 2rem 1.5rem;
-      border-right: 1px solid #e2e8f0;
-      background: #fafafa;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
+    .hero-title {
+      font-size: 3rem;
+      font-weight: 800;
+      line-height: 1.1;
+      margin: 0 0 1rem;
+      letter-spacing: -0.02em;
     }
-    .sidebar h1 {
-      font-size: 1.125rem;
-      font-weight: 700;
+    .hero-title span {
+      display: block;
+    }
+    .hero-tagline {
+      font-size: 1.25rem;
+      color: var(--text-muted);
       margin: 0;
     }
-    .control-group {
+
+    /* Sticky Toolbar */
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 0.75rem 1.5rem;
       display: flex;
-      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .toolbar-group {
+      display: flex;
+      align-items: center;
       gap: 0.5rem;
     }
-    .control-label {
+    .toolbar-label {
       font-size: 0.75rem;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      color: #64748b;
+      color: var(--text-muted);
     }
+    .toolbar-divider {
+      width: 1px;
+      height: 24px;
+      background: var(--border);
+    }
+
+    /* Pills */
     .pills {
       display: flex;
-      flex-wrap: wrap;
       gap: 4px;
     }
     .pills button {
       padding: 0.35rem 0.6rem;
       border: none;
       border-radius: 6px;
-      background: #e2e8f0;
-      color: #475569;
+      background: var(--bg-secondary);
+      color: var(--text-muted);
       font-size: 0.8rem;
       font-weight: 500;
       cursor: pointer;
       transition: all 0.15s;
     }
     .pills button:hover {
-      background: #cbd5e1;
+      background: var(--border);
+      color: var(--text);
     }
     .pills button.active {
-      background: #0f172a;
-      color: #fff;
-    }
-    /* Main content */
-    .main {
-      margin-left: 220px;
-      flex: 1;
-      padding: 2rem;
+      background: var(--accent);
+      color: var(--accent-text);
     }
 
-    /* Grid - Heroicons style */
+    /* Icon buttons */
+    .icon-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border: none;
+      border-radius: 8px;
+      background: var(--bg-secondary);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .icon-btn:hover {
+      background: var(--border);
+      color: var(--text);
+    }
+    .icon-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Main content */
+    .main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    /* Grid */
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
-      gap: 1.5rem 1.5rem;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 1.5rem;
     }
 
     /* Gesture card */
@@ -100,22 +177,62 @@
       align-items: center;
       justify-content: center;
       border-radius: 0.75rem;
-      background: #fff;
-      box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.08);
-      color: #0f172a;
+      background: var(--bg-secondary);
+      color: var(--text);
       overflow: hidden;
+      cursor: pointer;
     }
     .gesture-preview svg {
       width: var(--preview-size, 60%);
       height: var(--preview-size, 60%);
-      transition: width 0.15s, height 0.15s;
+    }
+    .gesture-card .gesture-toolbar {
+      display: flex;
+      gap: 4px;
+      margin-top: 0.5rem;
+      justify-content: center;
+    }
+    .gesture-card .copy-btn {
+      flex: 1;
+      padding: 0.4rem 0.75rem;
+      border: none;
+      border-radius: 0.375rem;
+      background: var(--bg-secondary);
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .gesture-card .copy-btn:hover {
+      background: var(--border);
+      color: var(--text);
+    }
+    .gesture-card .copy-btn.copied {
+      background: var(--accent);
+      color: var(--accent-text);
+    }
+    .gesture-name {
+      margin-top: 0.5rem;
+      text-align: center;
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+    }
+
+    /* Debug controls (hidden by default) */
+    .gesture-debug-controls {
+      display: none;
+      flex-direction: column;
+      gap: 0.35rem;
+      margin-top: 0.35rem;
+    }
+    .debug-mode .gesture-debug-controls {
+      display: flex;
     }
     .gesture-scrubber {
       display: flex;
       align-items: center;
       gap: 0.4rem;
-      margin-top: 0.5rem;
-      padding: 0 0.25rem;
     }
     .gesture-scrubber input[type="range"] {
       flex: 1;
@@ -125,90 +242,264 @@
     .gesture-scrubber .scrub-val {
       font-size: 0.65rem;
       font-family: ui-monospace, monospace;
-      color: #64748b;
+      color: var(--text-muted);
       min-width: 2.2rem;
       text-align: right;
     }
-    .gesture-toolbar {
+    .debug-toolbar {
       display: flex;
       gap: 4px;
-      margin-top: 0.35rem;
       justify-content: center;
     }
-    .gesture-toolbar button {
-      padding: 0.3rem 0.5rem;
+    .debug-toolbar button {
+      padding: 0.25rem 0.5rem;
       border: none;
       border-radius: 0.375rem;
-      background: #e2e8f0;
-      color: #475569;
+      background: var(--bg-secondary);
+      color: var(--text-muted);
+      font-size: 0.65rem;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .debug-toolbar button:hover {
+      background: var(--border);
+    }
+    .debug-toolbar .play-btn.playing {
+      background: var(--accent);
+      color: var(--accent-text);
+    }
+
+    /* Debug panel */
+    .debug-panel {
+      display: none;
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 1rem;
+      background: var(--bg-secondary);
+      border-radius: 0.75rem;
+    }
+    .debug-mode .debug-panel {
+      display: block;
+    }
+    .debug-panel h3 {
+      margin: 0 0 0.5rem;
+      font-size: 0.875rem;
+    }
+    .debug-panel textarea {
+      width: 100%;
+      height: 150px;
       font-size: 0.7rem;
+      font-family: ui-monospace, monospace;
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 0.5rem;
+      resize: vertical;
+    }
+    .debug-panel .pills {
+      margin-top: 0.5rem;
+    }
+
+    /* Usage section */
+    .usage {
+      max-width: 800px;
+      margin: 3rem auto;
+      padding: 0 1.5rem;
+    }
+    .usage h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 0 0 1rem;
+    }
+    .usage p {
+      color: var(--text-muted);
+      margin: 0 0 1.5rem;
+    }
+    .usage pre {
+      background: var(--bg-secondary);
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+      overflow-x: auto;
+      font-size: 0.875rem;
+      line-height: 1.6;
+      margin: 0 0 1.5rem;
+    }
+    .usage code {
+      font-family: ui-monospace, SFMono-Regular, monospace;
+      color: var(--text);
+    }
+    .usage .var {
+      color: #8b5cf6;
+    }
+    .usage .val {
+      color: #10b981;
+    }
+    .usage .comment {
+      color: var(--text-muted);
+    }
+
+    /* Footer */
+    .footer {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 3rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      text-align: center;
+    }
+    .footer-credit {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+    .footer-credit a {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .footer-credit a:hover {
+      text-decoration: underline;
+    }
+    .footer-links {
+      display: flex;
+      gap: 0.75rem;
+    }
+    .footer-links button {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 0.875rem;
+      border: 1px solid var(--border);
+      border-radius: 9999px;
+      background: var(--bg);
+      color: var(--text-muted);
+      font-size: 0.8rem;
       font-weight: 500;
       cursor: pointer;
       transition: all 0.15s;
     }
-    .gesture-toolbar button:hover {
-      background: #cbd5e1;
+    .footer-links button:hover {
+      background: var(--bg-secondary);
+      color: var(--text);
     }
-    .gesture-toolbar .play-btn.playing {
-      background: #0f172a;
-      color: #fff;
-    }
-    .gesture-toolbar .copy-btn.copied {
-      background: #0f172a;
-      color: #fff;
-    }
-    .gesture-name {
-      margin-top: 0.75rem;
-      text-align: center;
-      font-size: 0.8125rem;
-      color: #64748b;
-      line-height: 1.4;
+    .footer-links button svg {
+      width: 16px;
+      height: 16px;
     }
   </style>
 </head>
 <body>
-  <div class="layout">
-    <aside class="sidebar">
-      <h1>nicegestures</h1>
+  <!-- Hero -->
+  <header class="hero">
+    <h1 class="hero-title">
+      <span>Nice</span>
+      <span>Gestures</span>
+    </h1>
+    <p class="hero-tagline">Copy-paste SVG gesture animations for any project.<br>No JavaScript, no Lottie files.</p>
+  </header>
 
-      <div class="control-group">
-        <span class="control-label">Autoplay</span>
-        <div class="pills">
-          <button id="autoplayOff" class="active">Off</button>
-          <button id="autoplayOn">On</button>
-        </div>
+  <!-- Toolbar -->
+  <nav class="toolbar">
+    <div class="toolbar-group">
+      <span class="toolbar-label">Size</span>
+      <div class="pills" id="sizePills">
+        <button data-size="16">16</button>
+        <button data-size="20">20</button>
+        <button data-size="24" class="active">24</button>
+        <button data-size="32">32</button>
+        <button data-size="48">48</button>
       </div>
+    </div>
 
-      <div class="control-group">
-        <span class="control-label">Size</span>
-        <div class="pills" id="sizePills">
-          <button data-size="16">16</button>
-          <button data-size="20">20</button>
-          <button data-size="24" class="active">24</button>
-          <button data-size="32">32</button>
-          <button data-size="48">48</button>
-        </div>
-      </div>
+    <div class="toolbar-divider"></div>
 
-      <div class="control-group">
-        <span class="control-label">Debug</span>
-        <div class="pills">
-          <button id="runDiagBtn">Run Diagnostic</button>
-          <button id="copyDiagBtn">Copy Results</button>
-        </div>
-        <textarea id="debugOutput" style="font-size: 0.65rem; background: #fff; border: 1px solid #e2e8f0; padding: 0.5rem; margin-top: 0.5rem; width: 100%; height: 150px; resize: vertical; font-family: ui-monospace, monospace;"></textarea>
-      </div>
-    </aside>
+    <div class="toolbar-group">
+      <button class="icon-btn" id="themeToggle" title="Toggle dark mode">
+        <svg id="themeIconLight" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+        <svg id="themeIconDark" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="display:none">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+        </svg>
+      </button>
+    </div>
 
-    <main class="main">
-      <div class="grid" id="gestureGrid">
-        <!-- Gesture cards will be here -->
-      </div>
-    </main>
+    <div class="toolbar-divider"></div>
+
+    <div class="toolbar-group">
+      <a href="https://github.com/gingersoulrecords/nicegestures" target="_blank" class="icon-btn" title="View on GitHub">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+        </svg>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Grid -->
+  <main class="main">
+    <div class="grid" id="gestureGrid"></div>
+  </main>
+
+  <!-- Debug Panel (hidden unless ?debug=1 or localhost) -->
+  <div class="debug-panel">
+    <h3>Animation Diagnostic</h3>
+    <textarea id="debugOutput" placeholder="Click 'Run Diagnostic' to analyze swipe-down animation..."></textarea>
+    <div class="pills">
+      <button id="runDiagBtn">Run Diagnostic</button>
+      <button id="copyDiagBtn">Copy Results</button>
+    </div>
   </div>
 
-  <!-- SVG Templates - Each has unique keyframe names to avoid conflicts -->
+  <!-- Usage Section -->
+  <section class="usage">
+    <h2>How to use</h2>
+    <p>Click "Copy" on any gesture, then paste the SVG directly into your HTML. The animations work out of the box.</p>
 
+    <h3>Customize with CSS variables</h3>
+    <pre><code><span class="comment">&lt;!-- The SVG inherits color from its parent --&gt;</span>
+&lt;div style="<span class="var">color</span>: <span class="val">#3b82f6</span>"&gt;
+  &lt;!-- paste gesture SVG here --&gt;
+&lt;/div&gt;
+
+<span class="comment">&lt;!-- Or use CSS custom properties --&gt;</span>
+&lt;svg style="
+  <span class="var">--nges-stroke</span>: <span class="val">#3b82f6</span>;
+  <span class="var">--nges-fill</span>: <span class="val">white</span>;
+  <span class="var">--nges-duration</span>: <span class="val">2s</span>;
+"&gt;...&lt;/svg&gt;</code></pre>
+
+    <h3>Available variables</h3>
+    <pre><code><span class="var">--nges-stroke</span>     <span class="comment">/* Stroke color (default: currentColor) */</span>
+<span class="var">--nges-fill</span>       <span class="comment">/* Fill color (default: white) */</span>
+<span class="var">--nges-duration</span>   <span class="comment">/* Animation duration (default: 2.4s) */</span></code></pre>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p class="footer-credit">A <a href="https://gingersoul.co" target="_blank">Ginger Soul</a> thang</p>
+    <div class="footer-links">
+      <button onclick="shareTwitter()">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        Share
+      </button>
+      <button onclick="shareLinkedIn()">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        Share
+      </button>
+      <button onclick="copyLink()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
+        Copy Link
+      </button>
+      <button onclick="copyForAI()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+        Copy for AI
+      </button>
+    </div>
+  </footer>
+
+  <!-- SVG Templates -->
   <template id="tpl-swipe-down">
     <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
       <style>
@@ -259,9 +550,7 @@
         }
       </style>
       <g class="nges-swipe-down">
-        <!-- Touch circle: appears at touch point, moves with hand -->
         <circle class="nges-touch" cx="108" cy="50" r="12" />
-        <!-- Arrow to the right, centered on hand, moves with hand -->
         <g transform="translate(190, 91) scale(3) translate(-12, -12)">
           <g class="nges-arrow">
             <path d="M12 5v14" />
@@ -269,7 +558,6 @@
             <path d="M8 15l4 4" />
           </g>
         </g>
-        <!-- Hand -->
         <g class="nges-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
           <path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5" /><path d="M11 11.5v-2a1.5 1.5 0 1 1 3 0v2.5" /><path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5" /><path d="M17 11.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47" />
         </g></g>
@@ -327,9 +615,7 @@
         }
       </style>
       <g class="nges-swipe-up">
-        <!-- Touch circle: appears at touch point, moves with hand -->
         <circle class="nges-touch" cx="108" cy="110" r="12" />
-        <!-- Arrow to the right, centered on hand, moves with hand -->
         <g transform="translate(190, 151) scale(3) translate(-12, -12)">
           <g class="nges-arrow">
             <path d="M12 5v14" />
@@ -337,7 +623,6 @@
             <path d="M8 9l4 -4" />
           </g>
         </g>
-        <!-- Hand -->
         <g class="nges-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
           <path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5" /><path d="M11 11.5v-2a1.5 1.5 0 1 1 3 0v2.5" /><path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5" /><path d="M17 11.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47" />
         </g></g>
@@ -416,9 +701,7 @@
         }
       </style>
       <g class="nges-tap">
-        <!-- Ripple centered exactly at fingertip position (120, 90) -->
         <circle class="nges-ripple" cx="120" cy="90" r="30" />
-        <!-- Hand positioned so fingertip (9.5, 3) lands at (120, 90) -->
         <g class="nges-el"><g transform="translate(120, 90) scale(5) translate(-9.5, -3)">
           <path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5" />
           <path d="M11 11.5v-2a1.5 1.5 0 1 1 3 0v2.5" />
@@ -539,14 +822,20 @@
   </template>
 
   <script>
+    // Debug mode: localhost or ?debug=1
+    const isDebugMode = location.hostname === 'localhost' ||
+                        location.hostname === '127.0.0.1' ||
+                        new URLSearchParams(location.search).has('debug');
+
+    if (isDebugMode) {
+      document.body.classList.add('debug-mode');
+    }
+
     const gestureGrid = document.getElementById('gestureGrid');
     let selectedSize = 24;
-    let autoplay = false;
-
-    // Track playing state and animation frame per card
+    let autoplay = true; // Default to autoplay
     const cardStates = new Map();
 
-    // Size to preview percentage mapping
     const sizeToPreview = {
       16: '35%',
       20: '42%',
@@ -555,23 +844,17 @@
       48: '75%'
     };
 
-    // Define gestures - 8 core gestures with unique keyframe names
     const gestures = [
-      // Swipe (touch)
       { id: 'swipe-down', name: 'swipe-down', template: 'tpl-swipe-down' },
       { id: 'swipe-up', name: 'swipe-up', template: 'tpl-swipe-up' },
-      // Drag (mouse)
       { id: 'drag-down', name: 'drag-down', template: 'tpl-drag-down' },
       { id: 'drag-up', name: 'drag-up', template: 'tpl-drag-up' },
-      // Tap / click
       { id: 'tap', name: 'tap', template: 'tpl-tap' },
       { id: 'click', name: 'click', template: 'tpl-click' },
-      // Pinch
       { id: 'pinch-out', name: 'pinch-out', template: 'tpl-pinch-out' },
       { id: 'pinch-in', name: 'pinch-in', template: 'tpl-pinch-in' },
     ];
 
-    // Render gesture cards
     function renderGestures() {
       gestureGrid.innerHTML = '';
       gestures.forEach(gesture => {
@@ -580,43 +863,64 @@
         card.dataset.gesture = gesture.id;
         card.innerHTML = `
           <div class="gesture-preview"></div>
-          <div class="gesture-scrubber">
-            <input type="range" class="scrub-range" min="0" max="100" value="0" step="1">
-            <span class="scrub-val">0%</span>
-          </div>
           <div class="gesture-toolbar">
-            <button class="play-btn" data-gesture="${gesture.id}">Play</button>
             <button class="copy-btn" data-gesture="${gesture.id}">Copy</button>
+          </div>
+          <div class="gesture-debug-controls">
+            <div class="gesture-scrubber">
+              <input type="range" class="scrub-range" min="0" max="100" value="0" step="1">
+              <span class="scrub-val">0%</span>
+            </div>
+            <div class="debug-toolbar">
+              <button class="play-btn" data-gesture="${gesture.id}">Play</button>
+            </div>
           </div>
           <div class="gesture-name">${gesture.name}</div>
         `;
 
-        // Insert fresh SVG
         const preview = card.querySelector('.gesture-preview');
         insertFreshSvg(preview, gesture.id, autoplay);
+
+        // Hover behavior (only when not in debug mode or autoplay is off)
+        if (!isDebugMode) {
+          preview.addEventListener('mouseenter', () => {
+            if (!autoplay) {
+              const svg = preview.querySelector('svg');
+              if (svg) {
+                svg.querySelectorAll('.nges-el, .nges-ripple, .nges-touch, .nges-arrow, .nges-f1, .nges-f2').forEach(el => {
+                  el.style.animationPlayState = 'running';
+                });
+              }
+            }
+          });
+          preview.addEventListener('mouseleave', () => {
+            if (!autoplay) {
+              const svg = preview.querySelector('svg');
+              if (svg) {
+                svg.querySelectorAll('.nges-el, .nges-ripple, .nges-touch, .nges-arrow, .nges-f1, .nges-f2').forEach(el => {
+                  el.style.animationPlayState = 'paused';
+                });
+              }
+            }
+          });
+        }
 
         gestureGrid.appendChild(card);
       });
     }
 
-    // Get duration from SVG's CSS variable (default 2.4s)
     function getGestureDuration(gestureId) {
-      // Could parse from template, but for now use default
       return 2.4;
     }
 
-    // Insert a fresh copy of the SVG with optional seek position (0-100)
     function insertFreshSvg(container, gestureId, playing, seekPercent = 0) {
       const template = document.getElementById('tpl-' + gestureId);
       const svg = template.content.querySelector('svg').cloneNode(true);
       const duration = getGestureDuration(gestureId);
       const seekTime = (seekPercent / 100) * duration;
 
-      // Apply to all animated elements (those with nges- classes)
       svg.querySelectorAll('.nges-el, .nges-ripple, .nges-touch, .nges-arrow, .nges-f1, .nges-f2').forEach(el => {
-        // Set negative delay to seek to position
         el.style.animationDelay = `-${seekTime}s`;
-        // Pause if not playing
         if (!playing) {
           el.style.animationPlayState = 'paused';
         }
@@ -626,40 +930,35 @@
       container.appendChild(svg);
     }
 
-    // Seek SVG to a specific percentage (0-100)
     function seekSvg(container, gestureId, percent) {
-      // Replace with fresh SVG at the seek position, paused
       insertFreshSvg(container, gestureId, false, percent);
     }
 
-    // Start playing animation with slider sync
     function startPlaying(card) {
       const gestureId = card.dataset.gesture;
       const preview = card.querySelector('.gesture-preview');
       const scrubber = card.querySelector('.scrub-range');
       const valDisplay = card.querySelector('.scrub-val');
       const playBtn = card.querySelector('.play-btn');
-      const duration = getGestureDuration(gestureId) * 1000; // ms
+      const duration = getGestureDuration(gestureId) * 1000;
 
-      // Stop any existing playback
       stopPlaying(card);
 
-      // Get current position from scrubber
-      const startPercent = parseInt(scrubber.value);
+      const startPercent = parseInt(scrubber?.value || 0);
       const startTime = performance.now() - (startPercent / 100) * duration;
 
-      // Insert fresh SVG playing from current position
       insertFreshSvg(preview, gestureId, true, startPercent);
 
-      playBtn.textContent = 'Pause';
-      playBtn.classList.add('playing');
+      if (playBtn) {
+        playBtn.textContent = 'Pause';
+        playBtn.classList.add('playing');
+      }
 
-      // Animation loop to sync slider
       function tick(now) {
         const elapsed = now - startTime;
         const percent = Math.floor((elapsed % duration) / duration * 100);
-        scrubber.value = percent;
-        valDisplay.textContent = percent + '%';
+        if (scrubber) scrubber.value = percent;
+        if (valDisplay) valDisplay.textContent = percent + '%';
 
         const state = cardStates.get(card);
         if (state && state.playing) {
@@ -670,29 +969,26 @@
       cardStates.set(card, { playing: true, rafId: requestAnimationFrame(tick) });
     }
 
-    // Stop playing animation
     function stopPlaying(card) {
       const state = cardStates.get(card);
       if (state) {
-        if (state.rafId) {
-          cancelAnimationFrame(state.rafId);
-        }
+        if (state.rafId) cancelAnimationFrame(state.rafId);
         state.playing = false;
       }
 
       const playBtn = card.querySelector('.play-btn');
-      playBtn.textContent = 'Play';
-      playBtn.classList.remove('playing');
+      if (playBtn) {
+        playBtn.textContent = 'Play';
+        playBtn.classList.remove('playing');
+      }
 
-      // Pause the SVG at current position
       const preview = card.querySelector('.gesture-preview');
       const scrubber = card.querySelector('.scrub-range');
       const gestureId = card.dataset.gesture;
-      const percent = parseInt(scrubber.value);
+      const percent = parseInt(scrubber?.value || 0);
       insertFreshSvg(preview, gestureId, false, percent);
     }
 
-    // Check if card is playing
     function isPlaying(card) {
       const state = cardStates.get(card);
       return state && state.playing;
@@ -705,15 +1001,42 @@
       document.querySelectorAll('#sizePills button').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       selectedSize = parseInt(btn.dataset.size);
-
-      // Update preview sizes
       const previewSize = sizeToPreview[selectedSize] || '50%';
       document.querySelectorAll('.gesture-preview').forEach(preview => {
         preview.style.setProperty('--preview-size', previewSize);
       });
     });
 
-    // Scrubber handler - pause and seek when manually moved
+    // Theme toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIconLight = document.getElementById('themeIconLight');
+    const themeIconDark = document.getElementById('themeIconDark');
+
+    function updateThemeIcon() {
+      const isDark = document.documentElement.dataset.theme === 'dark' ||
+        (document.documentElement.dataset.theme !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      themeIconLight.style.display = isDark ? 'none' : 'block';
+      themeIconDark.style.display = isDark ? 'block' : 'none';
+    }
+
+    themeToggle.addEventListener('click', () => {
+      const current = document.documentElement.dataset.theme;
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+      if (!current) {
+        document.documentElement.dataset.theme = prefersDark ? 'light' : 'dark';
+      } else if (current === 'dark') {
+        document.documentElement.dataset.theme = 'light';
+      } else {
+        document.documentElement.dataset.theme = 'dark';
+      }
+      updateThemeIcon();
+    });
+
+    updateThemeIcon();
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateThemeIcon);
+
+    // Scrubber handler (debug mode)
     gestureGrid.addEventListener('input', e => {
       const scrubber = e.target.closest('.scrub-range');
       if (scrubber) {
@@ -723,21 +1046,19 @@
         const valDisplay = card.querySelector('.scrub-val');
         const percent = parseInt(scrubber.value);
 
-        // Stop playing if currently playing
         if (isPlaying(card)) {
           const state = cardStates.get(card);
-          if (state && state.rafId) {
-            cancelAnimationFrame(state.rafId);
-          }
+          if (state?.rafId) cancelAnimationFrame(state.rafId);
           state.playing = false;
           const playBtn = card.querySelector('.play-btn');
-          playBtn.textContent = 'Play';
-          playBtn.classList.remove('playing');
+          if (playBtn) {
+            playBtn.textContent = 'Play';
+            playBtn.classList.remove('playing');
+          }
         }
 
         valDisplay.textContent = percent + '%';
         seekSvg(preview, gestureId, percent);
-
       }
     });
 
@@ -746,8 +1067,6 @@
       const playBtn = e.target.closest('.play-btn');
       if (playBtn) {
         const card = playBtn.closest('.gesture-card');
-
-        // Toggle play/pause
         if (isPlaying(card)) {
           stopPlaying(card);
         } else {
@@ -756,14 +1075,11 @@
         return;
       }
 
-      // Copy handler
       const copyBtn = e.target.closest('.copy-btn');
       if (copyBtn) {
         const gestureId = copyBtn.dataset.gesture;
         const template = document.getElementById('tpl-' + gestureId);
         let svgString = template.content.querySelector('svg').outerHTML;
-
-        // Bake in size
         svgString = svgString.replace('<svg', `<svg width="${selectedSize}" height="${selectedSize}"`);
 
         navigator.clipboard.writeText(svgString);
@@ -776,11 +1092,70 @@
       }
     });
 
-    // Initial render
-    renderGestures();
+    // Share functions
+    function shareTwitter() {
+      const url = encodeURIComponent(window.location.href);
+      const text = encodeURIComponent('Nice Gestures - Copy-paste SVG gesture animations. No JavaScript, no Lottie files.');
+      window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank');
+    }
 
-    // Run diagnostic on swipe-down gesture
-    document.getElementById('runDiagBtn').addEventListener('click', async () => {
+    function shareLinkedIn() {
+      const url = encodeURIComponent(window.location.href);
+      window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
+    }
+
+    function copyLink() {
+      navigator.clipboard.writeText(window.location.href);
+      event.target.closest('button').textContent = 'Copied!';
+      setTimeout(() => {
+        event.target.closest('button').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg> Copy Link`;
+      }, 1200);
+    }
+
+    function copyForAI() {
+      const aiText = `# Nice Gestures - SVG Gesture Animation Library
+
+## Overview
+Nice Gestures is a collection of copy-paste SVG gesture animations. No JavaScript or Lottie files required - pure CSS animations embedded in SVG.
+
+## Available Gestures
+- swipe-down, swipe-up (touch gestures with directional arrow)
+- drag-down, drag-up (mouse cursor gestures)
+- tap (finger tap with ripple)
+- click (mouse click with ripple)
+- pinch-out, pinch-in (two-finger zoom gestures)
+
+## Usage
+1. Copy any gesture SVG from https://nicegestures.gingersoul.co
+2. Paste directly into HTML
+3. Customize with CSS variables:
+
+\`\`\`html
+<svg style="
+  --nges-stroke: #3b82f6;  /* Stroke color (default: currentColor) */
+  --nges-fill: white;       /* Fill color (default: white) */
+  --nges-duration: 2s;      /* Animation duration (default: 2.4s) */
+">...</svg>
+\`\`\`
+
+## Features
+- Self-contained SVG (no external dependencies)
+- Respects prefers-reduced-motion
+- Works on any background with proper theming
+- Customizable size via width/height attributes
+
+## Source
+https://github.com/gingersoulrecords/nicegestures`;
+
+      navigator.clipboard.writeText(aiText);
+      event.target.closest('button').textContent = 'Copied!';
+      setTimeout(() => {
+        event.target.closest('button').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg> Copy for AI`;
+      }, 1200);
+    }
+
+    // Debug diagnostic
+    document.getElementById('runDiagBtn')?.addEventListener('click', async () => {
       const output = document.getElementById('debugOutput');
       output.value = 'Running diagnostic...\n';
 
@@ -833,8 +1208,7 @@
       output.value = report;
     });
 
-    // Copy diagnostic results
-    document.getElementById('copyDiagBtn').addEventListener('click', (e) => {
+    document.getElementById('copyDiagBtn')?.addEventListener('click', (e) => {
       const output = document.getElementById('debugOutput');
       output.select();
       document.execCommand('copy');
@@ -842,33 +1216,13 @@
       setTimeout(() => e.target.textContent = 'Copy Results', 1200);
     });
 
+    // Initial render
+    renderGestures();
+
     // Set initial preview size
     const initialPreviewSize = sizeToPreview[selectedSize] || '50%';
     document.querySelectorAll('.gesture-preview').forEach(preview => {
       preview.style.setProperty('--preview-size', initialPreviewSize);
-    });
-
-    // Autoplay toggle
-    document.getElementById('autoplayOff').addEventListener('click', () => {
-      autoplay = false;
-      document.getElementById('autoplayOff').classList.add('active');
-      document.getElementById('autoplayOn').classList.remove('active');
-      // Stop all playing cards
-      document.querySelectorAll('.gesture-card').forEach(card => {
-        if (isPlaying(card)) {
-          stopPlaying(card);
-        }
-      });
-    });
-
-    document.getElementById('autoplayOn').addEventListener('click', () => {
-      autoplay = true;
-      document.getElementById('autoplayOn').classList.add('active');
-      document.getElementById('autoplayOff').classList.remove('active');
-      // Start playing all cards
-      document.querySelectorAll('.gesture-card').forEach(card => {
-        startPlaying(card);
-      });
     });
   </script>
 </body>
