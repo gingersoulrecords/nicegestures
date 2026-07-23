@@ -190,7 +190,6 @@
         </div>
       </div>
 
-
       <div class="control-group">
         <span class="control-label">Debug</span>
         <div class="pills">
@@ -614,7 +613,7 @@
       const seekTime = (seekPercent / 100) * duration;
 
       // Apply to all animated elements (those with nges- classes)
-      svg.querySelectorAll('.nges-el, .nges-ripple, .nges-touch, .nges-trail, .nges-arrow, .nges-f1, .nges-f2').forEach(el => {
+      svg.querySelectorAll('.nges-el, .nges-ripple, .nges-touch, .nges-arrow, .nges-f1, .nges-f2').forEach(el => {
         // Set negative delay to seek to position
         el.style.animationDelay = `-${seekTime}s`;
         // Pause if not playing
@@ -632,7 +631,6 @@
       // Replace with fresh SVG at the seek position, paused
       insertFreshSvg(container, gestureId, false, percent);
     }
-
 
     // Start playing animation with slider sync
     function startPlaying(card) {
@@ -781,7 +779,6 @@
     // Initial render
     renderGestures();
 
-
     // Run diagnostic on swipe-down gesture
     document.getElementById('runDiagBtn').addEventListener('click', async () => {
       const output = document.getElementById('debugOutput');
@@ -794,93 +791,44 @@
       }
 
       const preview = card.querySelector('.gesture-preview');
-      const gestureId = 'swipe-down';
-      const duration = getGestureDuration(gestureId);
+      const duration = getGestureDuration('swipe-down');
+      const checkPoints = [0, 10, 15, 20, 40, 55, 65, 80, 100];
 
-      let report = `SWIPE-DOWN GEOMETRY ANALYSIS\n`;
-      report += `Duration: ${duration}s\n\n`;
+      let report = `SWIPE-DOWN ANIMATION\nDuration: ${duration}s\n\n`;
 
-      // Static geometry calculations
-      report += `=== HAND GEOMETRY ===\n`;
-      report += `Base transform: translate(120,120) scale(5)\n`;
-      report += `Transform-origin: 108px 80px (fingertip)\n`;
-      report += `Icon fingertip y≈4, wrist y≈22\n`;
-      report += `At rest: fingertip=80, wrist=170 (span=90px)\n`;
-      report += `With scale(0.92): span=90*0.92=82.8px\n\n`;
-
-      report += `=== ARROW GEOMETRY ===\n`;
-      report += `Scale: 6, Icon spans y=5 to y=19 (14 units)\n`;
-      report += `Arrow height: 14*6=84px\n`;
-      report += `Top-to-center: 42px, Bottom-to-center: 42px\n`;
-      report += `Center at y=92 → top=50, bottom=134\n`;
-      report += `Moves 70px (same as hand)\n\n`;
-
-      // Key percentages to check
-      const checkPoints = [0, 15, 20, 55, 65, 80];
-
-      report += `=== ANIMATION FRAMES ===\n`;
       for (const pct of checkPoints) {
         const seekTime = (pct / 100) * duration;
-
         const template = document.getElementById('tpl-swipe-down');
         const svg = template.content.querySelector('svg').cloneNode(true);
 
         const handEl = svg.querySelector('.nges-el');
+        const touchEl = svg.querySelector('.nges-touch');
         const arrowEl = svg.querySelector('.nges-arrow');
 
-        if (handEl) {
-          handEl.style.animationDelay = `-${seekTime}s`;
-          handEl.style.animationPlayState = 'paused';
-        }
-        if (arrowEl) {
-          arrowEl.style.animationDelay = `-${seekTime}s`;
-          arrowEl.style.animationPlayState = 'paused';
-        }
+        [handEl, touchEl, arrowEl].forEach(el => {
+          if (el) {
+            el.style.animationDelay = `-${seekTime}s`;
+            el.style.animationPlayState = 'paused';
+          }
+        });
 
         preview.innerHTML = '';
         preview.appendChild(svg);
         svg.offsetHeight;
-        await new Promise(r => setTimeout(r, 50));
+        await new Promise(r => setTimeout(r, 30));
 
-        const handStyle = handEl ? window.getComputedStyle(handEl) : null;
-        const arrowStyle = arrowEl ? window.getComputedStyle(arrowEl) : null;
+        const getTransform = el => {
+          if (!el) return 'n/a';
+          const style = window.getComputedStyle(el);
+          return style.transform === 'none' ? 'none' : style.transform;
+        };
+        const getOpacity = el => {
+          if (!el) return 'n/a';
+          return parseFloat(window.getComputedStyle(el).opacity).toFixed(2);
+        };
 
-        // Parse full matrix for scale and translate
-        function parseMatrix(matrix) {
-          if (!matrix || matrix === 'none') return { scaleY: 1, translateY: 0 };
-          const match = matrix.match(/matrix\(([^)]+)\)/);
-          if (match) {
-            const v = match[1].split(',').map(x => parseFloat(x.trim()));
-            return { scaleY: v[3], translateY: v[5] };
-          }
-          return { scaleY: 1, translateY: 0 };
-        }
-
-        const hand = parseMatrix(handStyle?.transform);
-        const arrow = parseMatrix(arrowStyle?.transform);
-
-        // Calculate hand positions considering scale around transform-origin (108, 80)
-        // Fingertip is at origin, so it just translates
-        const fingerY = 80 + hand.translateY;
-        // Wrist is 90px below origin at rest, scaled then translated
-        const wristY = 80 + (90 * hand.scaleY) + hand.translateY;
-
-        // Arrow (scale 6, center at y=92)
-        // With scale 6: top offset = 42px, bottom offset = 42px
-        const arrowBaseY = 92 - 42 + arrow.translateY;  // top of arrow
-        const arrowPointY = 92 + 42 + arrow.translateY; // bottom of arrow
-
-        report += `${pct}%: `;
-        report += `finger=${fingerY.toFixed(0)} wrist=${wristY.toFixed(0)} | `;
-        report += `arrow: ${arrowBaseY.toFixed(0)}-${arrowPointY.toFixed(0)} | `;
-        report += `op=${parseFloat(arrowStyle?.opacity || 0).toFixed(2)}\n`;
+        report += `${pct}%: hand=${getTransform(handEl)} | touch op=${getOpacity(touchEl)} | arrow op=${getOpacity(arrowEl)}\n`;
       }
-
-      report += `\n=== TARGET (at 55%) ===\n`;
-      report += `Hand: finger≈120, wrist≈203\n`;
-      report += `Arrow should: base=120, point=203\n`;
-      report += `Need: scale(6), center at y=92\n`;
-      report += `Arrow translateY: 70px (same as hand)\n`;
 
       output.value = report;
     });
