@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>nicegestures</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #fff;
+      color: #0f172a;
+    }
+
+    /* Layout */
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 220px;
+      height: 100vh;
+      padding: 2rem 1.5rem;
+      border-right: 1px solid #e2e8f0;
+      background: #fafafa;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+    .sidebar h1 {
+      font-size: 1.125rem;
+      font-weight: 700;
+      margin: 0;
+    }
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .control-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #64748b;
+    }
+    .pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .pills button {
+      padding: 0.35rem 0.6rem;
+      border: none;
+      border-radius: 6px;
+      background: #e2e8f0;
+      color: #475569;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .pills button:hover {
+      background: #cbd5e1;
+    }
+    .pills button.active {
+      background: #0f172a;
+      color: #fff;
+    }
+    /* Main content */
+    .main {
+      margin-left: 220px;
+      flex: 1;
+      padding: 2rem;
+    }
+
+    /* Grid - Heroicons style */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+      gap: 1.5rem 1.5rem;
+    }
+
+    /* Gesture card */
+    .gesture-card {
+      display: flex;
+      flex-direction: column;
+    }
+    .gesture-preview {
+      position: relative;
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0.75rem;
+      background: #fff;
+      box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.08);
+      color: #0f172a;
+      overflow: hidden;
+    }
+    .gesture-preview svg {
+      width: var(--preview-size, 60%);
+      height: var(--preview-size, 60%);
+      transition: width 0.15s, height 0.15s;
+    }
+    .gesture-scrubber {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: 0.5rem;
+      padding: 0 0.25rem;
+    }
+    .gesture-scrubber input[type="range"] {
+      flex: 1;
+      height: 4px;
+      cursor: pointer;
+    }
+    .gesture-scrubber .scrub-val {
+      font-size: 0.65rem;
+      font-family: ui-monospace, monospace;
+      color: #64748b;
+      min-width: 2.2rem;
+      text-align: right;
+    }
+    .gesture-toolbar {
+      display: flex;
+      gap: 4px;
+      margin-top: 0.35rem;
+      justify-content: center;
+    }
+    .gesture-toolbar button {
+      padding: 0.3rem 0.5rem;
+      border: none;
+      border-radius: 0.375rem;
+      background: #e2e8f0;
+      color: #475569;
+      font-size: 0.7rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .gesture-toolbar button:hover {
+      background: #cbd5e1;
+    }
+    .gesture-toolbar .play-btn.playing {
+      background: #0f172a;
+      color: #fff;
+    }
+    .gesture-toolbar .copy-btn.copied {
+      background: #0f172a;
+      color: #fff;
+    }
+    .gesture-name {
+      margin-top: 0.75rem;
+      text-align: center;
+      font-size: 0.8125rem;
+      color: #64748b;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <h1>nicegestures</h1>
+
+      <div class="control-group">
+        <span class="control-label">Autoplay</span>
+        <div class="pills">
+          <button id="autoplayOff" class="active">Off</button>
+          <button id="autoplayOn">On</button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <span class="control-label">Size</span>
+        <div class="pills" id="sizePills">
+          <button data-size="16">16</button>
+          <button data-size="20">20</button>
+          <button data-size="24" class="active">24</button>
+          <button data-size="32">32</button>
+          <button data-size="48">48</button>
+        </div>
+      </div>
+
+
+      <div class="control-group">
+        <span class="control-label">Debug</span>
+        <div class="pills">
+          <button id="runDiagBtn">Run Diagnostic</button>
+          <button id="copyDiagBtn">Copy Results</button>
+        </div>
+        <textarea id="debugOutput" style="font-size: 0.65rem; background: #fff; border: 1px solid #e2e8f0; padding: 0.5rem; margin-top: 0.5rem; width: 100%; height: 150px; resize: vertical; font-family: ui-monospace, monospace;"></textarea>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="grid" id="gestureGrid">
+        <!-- Gesture cards will be here -->
+      </div>
+    </main>
+  </div>
+
+  <!-- SVG Templates - Each has unique keyframe names to avoid conflicts -->
+
+  <template id="tpl-swipe-down">
+    <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+      <style>
+        .nges-swipe-down { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
+        .nges-swipe-down path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
+        .nges-swipe-down .nges-el { transform-origin: 108px 80px; }
+        .nges-swipe-down .nges-touch {
+          fill: var(--_s);
+          opacity: 0;
+          transform-origin: 108px 50px;
+        }
+        .nges-swipe-down .nges-arrow path {
+          stroke: var(--_s);
+          stroke-width: 1.5;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+          fill: none;
+        }
+        .nges-swipe-down .nges-arrow {
+          opacity: 0;
+        }
+        @media (prefers-reduced-motion: no-preference) {
+          .nges-swipe-down .nges-el { animation: nges-swipe-down-hand var(--_d) ease-in-out infinite; }
+          .nges-swipe-down .nges-touch { animation: nges-swipe-down-touch var(--_d) ease-in-out infinite; }
+          .nges-swipe-down .nges-arrow { animation: nges-swipe-down-arrow var(--_d) ease-in-out infinite; }
+        }
+        @keyframes nges-swipe-down-hand {
+          0%, 5% { transform: translateY(0) scale(1); }
+          15% { transform: translateY(-30px) scale(1); }
+          20% { transform: translateY(-30px) scale(0.92); }
+          55% { transform: translateY(40px) scale(0.92); }
+          65% { transform: translateY(40px) scale(1); }
+          80%, 100% { transform: translateY(0) scale(1); }
+        }
+        @keyframes nges-swipe-down-touch {
+          0%, 10% { transform: translateY(0) scale(0); opacity: 0; }
+          20% { transform: translateY(0) scale(1); opacity: 0.35; }
+          55% { transform: translateY(70px) scale(1); opacity: 0.35; }
+          65% { transform: translateY(70px) scale(1); opacity: 0; }
+          100% { transform: translateY(0) scale(0); opacity: 0; }
+        }
+        @keyframes nges-swipe-down-arrow {
+          0%, 10% { transform: translateY(0); opacity: 0; }
+          20% { transform: translateY(0); opacity: 0.6; }
+          55% { transform: translateY(30px); opacity: 0.6; }
+          65% { transform: translateY(30px); opacity: 0; }
+          100% { transform: translateY(0); opacity: 0; }
+        }
+      </style>
+      <g class="nges-swipe-down">
+        <!-- Touch circle: appears at touch point, moves with hand -->
+        <circle class="nges-touch" cx="108" cy="50" r="12" />
+        <!-- Arrow to the right, centered on hand, moves with hand -->
+        <g transform="translate(190, 91) scale(3) translate(-12, -12)">
+          <g class="nges-arrow">
+            <path d="M12 5v14" />
+            <path d="M16 15l-4 4" />
+            <path d="M8 15l4 4" />
+          </g>
+        </g>
+        <!-- Hand -->
+        <g class="nges-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
+          <path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5" /><path d="M11 11.5v-2a1.5 1.5 0 1 1 3 0v2.5" /><path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5" /><path d="M17 11.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47" />
+        </g></g>
+      </g>
+    </svg>
+  </template>
+
+  <template id="tpl-swipe-up">
+    <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+      <style>
+        .nges-swipe-up { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
+        .nges-swipe-up path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
+        .nges-swipe-up .nges-el { transform-origin: 108px 80px; }
+        .nges-swipe-up .nges-touch {
+          fill: var(--_s);
+          opacity: 0;
+          transform-origin: 108px 110px;
+        }
+        .nges-swipe-up .nges-arrow path {
+          stroke: var(--_s);
+          stroke-width: 1.5;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+          fill: none;
+        }
+        .nges-swipe-up .nges-arrow {
+          opacity: 0;
+        }
+        @media (prefers-reduced-motion: no-preference) {
+          .nges-swipe-up .nges-el { animation: nges-swipe-up-hand var(--_d) ease-in-out infinite; }
+          .nges-swipe-up .nges-touch { animation: nges-swipe-up-touch var(--_d) ease-in-out infinite; }
+          .nges-swipe-up .nges-arrow { animation: nges-swipe-up-arrow var(--_d) ease-in-out infinite; }
+        }
+        @keyframes nges-swipe-up-hand {
+          0%, 5% { transform: translateY(0) scale(1); }
+          15% { transform: translateY(30px) scale(1); }
+          20% { transform: translateY(30px) scale(0.92); }
+          55% { transform: translateY(-40px) scale(0.92); }
+          65% { transform: translateY(-40px) scale(1); }
+          80%, 100% { transform: translateY(0) scale(1); }
+        }
+        @keyframes nges-swipe-up-touch {
+          0%, 10% { transform: translateY(0) scale(0); opacity: 0; }
+          20% { transform: translateY(0) scale(1); opacity: 0.35; }
+          55% { transform: translateY(-70px) scale(1); opacity: 0.35; }
+          65% { transform: translateY(-70px) scale(1); opacity: 0; }
+          100% { transform: translateY(0) scale(0); opacity: 0; }
+        }
+        @keyframes nges-swipe-up-arrow {
+          0%, 10% { transform: translateY(0); opacity: 0; }
+          20% { transform: translateY(0); opacity: 0.6; }
+          55% { transform: translateY(-30px); opacity: 0.6; }
+          65% { transform: translateY(-30px); opacity: 0; }
+          100% { transform: translateY(0); opacity: 0; }
+        }
+      </style>
+      <g class="nges-swipe-up">
+        <!-- Touch circle: appears at touch point, moves with hand -->
+        <circle class="nges-touch" cx="108" cy="110" r="12" />
+        <!-- Arrow to the right, centered on hand, moves with hand -->
+        <g transform="translate(190, 151) scale(3) translate(-12, -12)">
+          <g class="nges-arrow">
+            <path d="M12 5v14" />
+            <path d="M16 9l-4 -4" />
+            <path d="M8 9l4 -4" />
+          </g>
+        </g>
+        <!-- Hand -->
+        <g class="nges-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
+          <path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5" /><path d="M11 11.5v-2a1.5 1.5 0 1 1 3 0v2.5" /><path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5" /><path d="M17 11.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47" />
+        </g></g>
+      </g>
+    </svg>
+  </template>
+
+  <template id="tpl-drag-down">
+    <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+      <style>
+        .nges-drag-down { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
+        .nges-drag-down path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
+        .nges-drag-down .nges-el { transform: translateY(25px); opacity: 0.8; }
+        @media (prefers-reduced-motion: no-preference) {
+          .nges-drag-down .nges-el { animation: nges-drag-down var(--_d) ease-in-out infinite; }
+        }
+        @keyframes nges-drag-down {
+          0% { transform: translateY(0); opacity: 0; }
+          15% { transform: translateY(0); opacity: 1; }
+          60% { transform: translateY(50px); opacity: 1; }
+          80% { transform: translateY(50px); opacity: 0; }
+          100% { transform: translateY(0); opacity: 0; }
+        }
+      </style>
+      <g class="nges-drag-down"><g class="nges-el"><g transform="translate(120, 70) scale(5) translate(-12, -12)">
+        <path d="M7.904 17.563a1.2 1.2 0 0 0 2.228 .308l2.09 -3.093l4.907 4.907a1.067 1.067 0 0 0 1.509 0l1.047 -1.047a1.067 1.067 0 0 0 0 -1.509l-4.907 -4.907l3.113 -2.09a1.2 1.2 0 0 0 -.309 -2.228l-13.582 -3.904l3.904 13.563" />
+      </g></g></g>
+    </svg>
+  </template>
+
+  <template id="tpl-drag-up">
+    <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+      <style>
+        .nges-drag-up { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
+        .nges-drag-up path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
+        .nges-drag-up .nges-el { transform: translateY(-25px); opacity: 0.8; }
+        @media (prefers-reduced-motion: no-preference) {
+          .nges-drag-up .nges-el { animation: nges-drag-up var(--_d) ease-in-out infinite; }
+        }
+        @keyframes nges-drag-up {
+          0% { transform: translateY(0); opacity: 0; }
+          15% { transform: translateY(0); opacity: 1; }
+          60% { transform: translateY(-50px); opacity: 1; }
+          80% { transform: translateY(-50px); opacity: 0; }
+          100% { transform: translateY(0); opacity: 0; }
+        }
+      </style>
+      <g class="nges-drag-up"><g class="nges-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
+        <path d="M7.904 17.563a1.2 1.2 0 0 0 2.228 .308l2.09 -3.093l4.907 4.907a1.067 1.067 0 0 0 1.509 0l1.047 -1.047a1.067 1.067 0 0 0 0 -1.509l-4.907 -4.907l3.113 -2.09a1.2 1.2 0 0 0 -.309 -2.228l-13.582 -3.904l3.904 13.563" />
+      </g></g></g>
+    </svg>
+  </template>
+
+  <template id="tpl-tap">
+    <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+      <style>
+        .nges-tap { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
+        .nges-tap path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
+        .nges-tap .nges-el { transform-origin: 120px 90px; }
+        .nges-tap .nges-ripple { fill: var(--_s); stroke: none; opacity: 0; transform-origin: 120px 90px; }
+        @media (prefers-reduced-motion: no-preference) {
+          .nges-tap .nges-el { animation: nges-tap-hand var(--_d) ease-in-out infinite; }
+          .nges-tap .nges-ripple { animation: nges-tap-ripple var(--_d) ease-out infinite; }
+        }
+        @keyframes nges-tap-hand {
+          0%, 3% { transform: scale(1); }
+          12% { transform: scale(0.92); }
+          25%, 100% { transform: scale(1); }
+        }
+        @keyframes nges-tap-ripple {
+          0%, 11% { transform: scale(0); opacity: 0; }
+          12% { transform: scale(0); opacity: 0.35; }
+          22% { transform: scale(0.4); opacity: 0.25; }
+          42% { transform: scale(1); opacity: 0; }
+          100% { transform: scale(1); opacity: 0; }
+        }
+      </style>
+      <g class="nges-tap">
+        <!-- Ripple centered exactly at fingertip position (120, 90) -->
+        <circle class="nges-ripple" cx="120" cy="90" r="30" />
+        <!-- Hand positioned so fingertip (9.5, 3) lands at (120, 90) -->
+        <g class="nges-el"><g transform="translate(120, 90) scale(5) translate(-9.5, -3)">
+          <path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5" />
+          <path d="M11 11.5v-2a1.5 1.5 0 1 1 3 0v2.5" />
+          <path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5" />
+          <path d="M17 11.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47" />
+        </g></g>
+      </g>
+    </svg>
+  </template>
+
+  <template id="tpl-click">
+    <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+      <style>
+        .nges-click { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
+        .nges-click path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
+        .nges-click .nges-el { opacity: 0.8; }
+        .nges-click .nges-ripple { stroke: var(--_s); stroke-width: 1.5; fill: none; opacity: 0; }
+        @media (prefers-reduced-motion: no-preference) {
+          .nges-click .nges-el { animation: nges-click-cursor var(--_d) ease-in-out infinite; }
+          .nges-click .nges-ripple { animation: nges-click-ripple var(--_d) ease-out infinite; }
+        }
+        @keyframes nges-click-cursor {
+          0%, 15% { transform: scale(1); opacity: 0; }
+          25% { transform: scale(1); opacity: 1; }
+          35%, 45% { transform: scale(0.92); opacity: 1; }
+          55% { transform: scale(1); opacity: 1; }
+          70% { transform: scale(1); opacity: 0; }
+          100% { transform: scale(1); opacity: 0; }
+        }
+        @keyframes nges-click-ripple {
+          0%, 34% { transform: scale(0); opacity: 0; }
+          38% { transform: scale(0.3); opacity: 0.6; }
+          55% { transform: scale(1); opacity: 0; }
+          100% { transform: scale(1); opacity: 0; }
+        }
+      </style>
+      <g class="nges-click">
+        <circle class="nges-ripple" cx="95" cy="85" r="25" style="transform-origin: 95px 85px" />
+        <g class="nges-el"><g transform="translate(120, 95) scale(5) translate(-12, -12)">
+          <path d="M7.904 17.563a1.2 1.2 0 0 0 2.228 .308l2.09 -3.093l4.907 4.907a1.067 1.067 0 0 0 1.509 0l1.047 -1.047a1.067 1.067 0 0 0 0 -1.509l-4.907 -4.907l3.113 -2.09a1.2 1.2 0 0 0 -.309 -2.228l-13.582 -3.904l3.904 13.563" />
+        </g></g>
+      </g>
+    </svg>
+  </template>
+
+  <template id="tpl-pinch-out">
+    <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+      <style>
+        .nges-pinch-out { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
+        .nges-pinch-out path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
+        .nges-pinch-out .nges-f1 { opacity: 0.8; transform: translate(-10px, -10px); }
+        .nges-pinch-out .nges-f2 { opacity: 0.8; transform: translate(10px, 10px); }
+        @media (prefers-reduced-motion: no-preference) {
+          .nges-pinch-out .nges-f1 { animation: nges-pinch-out-f1 var(--_d) ease-in-out infinite; }
+          .nges-pinch-out .nges-f2 { animation: nges-pinch-out-f2 var(--_d) ease-in-out infinite; }
+        }
+        @keyframes nges-pinch-out-f1 {
+          0%, 10% { transform: translate(0, 0); opacity: 0; }
+          20% { transform: translate(0, 0); opacity: 1; }
+          60% { transform: translate(-25px, -25px); opacity: 1; }
+          80% { transform: translate(-25px, -25px); opacity: 0; }
+          100% { transform: translate(0, 0); opacity: 0; }
+        }
+        @keyframes nges-pinch-out-f2 {
+          0%, 10% { transform: translate(0, 0); opacity: 0; }
+          20% { transform: translate(0, 0); opacity: 1; }
+          60% { transform: translate(25px, 25px); opacity: 1; }
+          80% { transform: translate(25px, 25px); opacity: 0; }
+          100% { transform: translate(0, 0); opacity: 0; }
+        }
+      </style>
+      <g class="nges-pinch-out">
+        <g class="nges-f1"><g transform="translate(105, 105) scale(3.5) translate(-12, -12)">
+          <path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5" /><path d="M11 11.5v-2a1.5 1.5 0 1 1 3 0v2.5" /><path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5" /><path d="M17 11.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47" />
+        </g></g>
+        <g class="nges-f2"><g transform="translate(135, 135) scale(3.5) translate(-12, -12)">
+          <path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5" /><path d="M11 11.5v-2a1.5 1.5 0 1 1 3 0v2.5" /><path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5" /><path d="M17 11.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47" />
+        </g></g>
+      </g>
+    </svg>
+  </template>
+
+  <template id="tpl-pinch-in">
+    <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+      <style>
+        .nges-pinch-in { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
+        .nges-pinch-in path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
+        .nges-pinch-in .nges-f1 { opacity: 0.8; transform: translate(10px, 10px); }
+        .nges-pinch-in .nges-f2 { opacity: 0.8; transform: translate(-10px, -10px); }
+        @media (prefers-reduced-motion: no-preference) {
+          .nges-pinch-in .nges-f1 { animation: nges-pinch-in-f1 var(--_d) ease-in-out infinite; }
+          .nges-pinch-in .nges-f2 { animation: nges-pinch-in-f2 var(--_d) ease-in-out infinite; }
+        }
+        @keyframes nges-pinch-in-f1 {
+          0%, 10% { transform: translate(-25px, -25px); opacity: 0; }
+          20% { transform: translate(-25px, -25px); opacity: 1; }
+          60% { transform: translate(10px, 10px); opacity: 1; }
+          80% { transform: translate(10px, 10px); opacity: 0; }
+          100% { transform: translate(-25px, -25px); opacity: 0; }
+        }
+        @keyframes nges-pinch-in-f2 {
+          0%, 10% { transform: translate(25px, 25px); opacity: 0; }
+          20% { transform: translate(25px, 25px); opacity: 1; }
+          60% { transform: translate(-10px, -10px); opacity: 1; }
+          80% { transform: translate(-10px, -10px); opacity: 0; }
+          100% { transform: translate(25px, 25px); opacity: 0; }
+        }
+      </style>
+      <g class="nges-pinch-in">
+        <g class="nges-f1"><g transform="translate(105, 105) scale(3.5) translate(-12, -12)">
+          <path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5" /><path d="M11 11.5v-2a1.5 1.5 0 1 1 3 0v2.5" /><path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5" /><path d="M17 11.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47" />
+        </g></g>
+        <g class="nges-f2"><g transform="translate(135, 135) scale(3.5) translate(-12, -12)">
+          <path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5" /><path d="M11 11.5v-2a1.5 1.5 0 1 1 3 0v2.5" /><path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5" /><path d="M17 11.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47" />
+        </g></g>
+      </g>
+    </svg>
+  </template>
+
+  <script>
+    const gestureGrid = document.getElementById('gestureGrid');
+    let selectedSize = 24;
+    let autoplay = false;
+
+    // Track playing state and animation frame per card
+    const cardStates = new Map();
+
+    // Size to preview percentage mapping
+    const sizeToPreview = {
+      16: '35%',
+      20: '42%',
+      24: '50%',
+      32: '60%',
+      48: '75%'
+    };
+
+    // Define gestures - 8 core gestures with unique keyframe names
+    const gestures = [
+      // Swipe (touch)
+      { id: 'swipe-down', name: 'swipe-down', template: 'tpl-swipe-down' },
+      { id: 'swipe-up', name: 'swipe-up', template: 'tpl-swipe-up' },
+      // Drag (mouse)
+      { id: 'drag-down', name: 'drag-down', template: 'tpl-drag-down' },
+      { id: 'drag-up', name: 'drag-up', template: 'tpl-drag-up' },
+      // Tap / click
+      { id: 'tap', name: 'tap', template: 'tpl-tap' },
+      { id: 'click', name: 'click', template: 'tpl-click' },
+      // Pinch
+      { id: 'pinch-out', name: 'pinch-out', template: 'tpl-pinch-out' },
+      { id: 'pinch-in', name: 'pinch-in', template: 'tpl-pinch-in' },
+    ];
+
+    // Render gesture cards
+    function renderGestures() {
+      gestureGrid.innerHTML = '';
+      gestures.forEach(gesture => {
+        const card = document.createElement('div');
+        card.className = 'gesture-card';
+        card.dataset.gesture = gesture.id;
+        card.innerHTML = `
+          <div class="gesture-preview"></div>
+          <div class="gesture-scrubber">
+            <input type="range" class="scrub-range" min="0" max="100" value="0" step="1">
+            <span class="scrub-val">0%</span>
+          </div>
+          <div class="gesture-toolbar">
+            <button class="play-btn" data-gesture="${gesture.id}">Play</button>
+            <button class="copy-btn" data-gesture="${gesture.id}">Copy</button>
+          </div>
+          <div class="gesture-name">${gesture.name}</div>
+        `;
+
+        // Insert fresh SVG
+        const preview = card.querySelector('.gesture-preview');
+        insertFreshSvg(preview, gesture.id, autoplay);
+
+        gestureGrid.appendChild(card);
+      });
+    }
+
+    // Get duration from SVG's CSS variable (default 2.4s)
+    function getGestureDuration(gestureId) {
+      // Could parse from template, but for now use default
+      return 2.4;
+    }
+
+    // Insert a fresh copy of the SVG with optional seek position (0-100)
+    function insertFreshSvg(container, gestureId, playing, seekPercent = 0) {
+      const template = document.getElementById('tpl-' + gestureId);
+      const svg = template.content.querySelector('svg').cloneNode(true);
+      const duration = getGestureDuration(gestureId);
+      const seekTime = (seekPercent / 100) * duration;
+
+      // Apply to all animated elements (those with nges- classes)
+      svg.querySelectorAll('.nges-el, .nges-ripple, .nges-touch, .nges-trail, .nges-arrow, .nges-f1, .nges-f2').forEach(el => {
+        // Set negative delay to seek to position
+        el.style.animationDelay = `-${seekTime}s`;
+        // Pause if not playing
+        if (!playing) {
+          el.style.animationPlayState = 'paused';
+        }
+      });
+
+      container.innerHTML = '';
+      container.appendChild(svg);
+    }
+
+    // Seek SVG to a specific percentage (0-100)
+    function seekSvg(container, gestureId, percent) {
+      // Replace with fresh SVG at the seek position, paused
+      insertFreshSvg(container, gestureId, false, percent);
+    }
+
+
+    // Start playing animation with slider sync
+    function startPlaying(card) {
+      const gestureId = card.dataset.gesture;
+      const preview = card.querySelector('.gesture-preview');
+      const scrubber = card.querySelector('.scrub-range');
+      const valDisplay = card.querySelector('.scrub-val');
+      const playBtn = card.querySelector('.play-btn');
+      const duration = getGestureDuration(gestureId) * 1000; // ms
+
+      // Stop any existing playback
+      stopPlaying(card);
+
+      // Get current position from scrubber
+      const startPercent = parseInt(scrubber.value);
+      const startTime = performance.now() - (startPercent / 100) * duration;
+
+      // Insert fresh SVG playing from current position
+      insertFreshSvg(preview, gestureId, true, startPercent);
+
+      playBtn.textContent = 'Pause';
+      playBtn.classList.add('playing');
+
+      // Animation loop to sync slider
+      function tick(now) {
+        const elapsed = now - startTime;
+        const percent = Math.floor((elapsed % duration) / duration * 100);
+        scrubber.value = percent;
+        valDisplay.textContent = percent + '%';
+
+        const state = cardStates.get(card);
+        if (state && state.playing) {
+          state.rafId = requestAnimationFrame(tick);
+        }
+      }
+
+      cardStates.set(card, { playing: true, rafId: requestAnimationFrame(tick) });
+    }
+
+    // Stop playing animation
+    function stopPlaying(card) {
+      const state = cardStates.get(card);
+      if (state) {
+        if (state.rafId) {
+          cancelAnimationFrame(state.rafId);
+        }
+        state.playing = false;
+      }
+
+      const playBtn = card.querySelector('.play-btn');
+      playBtn.textContent = 'Play';
+      playBtn.classList.remove('playing');
+
+      // Pause the SVG at current position
+      const preview = card.querySelector('.gesture-preview');
+      const scrubber = card.querySelector('.scrub-range');
+      const gestureId = card.dataset.gesture;
+      const percent = parseInt(scrubber.value);
+      insertFreshSvg(preview, gestureId, false, percent);
+    }
+
+    // Check if card is playing
+    function isPlaying(card) {
+      const state = cardStates.get(card);
+      return state && state.playing;
+    }
+
+    // Size selection
+    document.getElementById('sizePills').addEventListener('click', e => {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      document.querySelectorAll('#sizePills button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedSize = parseInt(btn.dataset.size);
+
+      // Update preview sizes
+      const previewSize = sizeToPreview[selectedSize] || '50%';
+      document.querySelectorAll('.gesture-preview').forEach(preview => {
+        preview.style.setProperty('--preview-size', previewSize);
+      });
+    });
+
+    // Scrubber handler - pause and seek when manually moved
+    gestureGrid.addEventListener('input', e => {
+      const scrubber = e.target.closest('.scrub-range');
+      if (scrubber) {
+        const card = scrubber.closest('.gesture-card');
+        const gestureId = card.dataset.gesture;
+        const preview = card.querySelector('.gesture-preview');
+        const valDisplay = card.querySelector('.scrub-val');
+        const percent = parseInt(scrubber.value);
+
+        // Stop playing if currently playing
+        if (isPlaying(card)) {
+          const state = cardStates.get(card);
+          if (state && state.rafId) {
+            cancelAnimationFrame(state.rafId);
+          }
+          state.playing = false;
+          const playBtn = card.querySelector('.play-btn');
+          playBtn.textContent = 'Play';
+          playBtn.classList.remove('playing');
+        }
+
+        valDisplay.textContent = percent + '%';
+        seekSvg(preview, gestureId, percent);
+
+      }
+    });
+
+    // Button handlers
+    gestureGrid.addEventListener('click', e => {
+      const playBtn = e.target.closest('.play-btn');
+      if (playBtn) {
+        const card = playBtn.closest('.gesture-card');
+
+        // Toggle play/pause
+        if (isPlaying(card)) {
+          stopPlaying(card);
+        } else {
+          startPlaying(card);
+        }
+        return;
+      }
+
+      // Copy handler
+      const copyBtn = e.target.closest('.copy-btn');
+      if (copyBtn) {
+        const gestureId = copyBtn.dataset.gesture;
+        const template = document.getElementById('tpl-' + gestureId);
+        let svgString = template.content.querySelector('svg').outerHTML;
+
+        // Bake in size
+        svgString = svgString.replace('<svg', `<svg width="${selectedSize}" height="${selectedSize}"`);
+
+        navigator.clipboard.writeText(svgString);
+        copyBtn.textContent = 'Copied!';
+        copyBtn.classList.add('copied');
+        setTimeout(() => {
+          copyBtn.textContent = 'Copy';
+          copyBtn.classList.remove('copied');
+        }, 1200);
+      }
+    });
+
+    // Initial render
+    renderGestures();
+
+
+    // Run diagnostic on swipe-down gesture
+    document.getElementById('runDiagBtn').addEventListener('click', async () => {
+      const output = document.getElementById('debugOutput');
+      output.value = 'Running diagnostic...\n';
+
+      const card = document.querySelector('[data-gesture="swipe-down"]');
+      if (!card) {
+        output.value = 'Swipe-down gesture not found';
+        return;
+      }
+
+      const preview = card.querySelector('.gesture-preview');
+      const gestureId = 'swipe-down';
+      const duration = getGestureDuration(gestureId);
+
+      let report = `SWIPE-DOWN GEOMETRY ANALYSIS\n`;
+      report += `Duration: ${duration}s\n\n`;
+
+      // Static geometry calculations
+      report += `=== HAND GEOMETRY ===\n`;
+      report += `Base transform: translate(120,120) scale(5)\n`;
+      report += `Transform-origin: 108px 80px (fingertip)\n`;
+      report += `Icon fingertip y≈4, wrist y≈22\n`;
+      report += `At rest: fingertip=80, wrist=170 (span=90px)\n`;
+      report += `With scale(0.92): span=90*0.92=82.8px\n\n`;
+
+      report += `=== ARROW GEOMETRY ===\n`;
+      report += `Scale: 6, Icon spans y=5 to y=19 (14 units)\n`;
+      report += `Arrow height: 14*6=84px\n`;
+      report += `Top-to-center: 42px, Bottom-to-center: 42px\n`;
+      report += `Center at y=92 → top=50, bottom=134\n`;
+      report += `Moves 70px (same as hand)\n\n`;
+
+      // Key percentages to check
+      const checkPoints = [0, 15, 20, 55, 65, 80];
+
+      report += `=== ANIMATION FRAMES ===\n`;
+      for (const pct of checkPoints) {
+        const seekTime = (pct / 100) * duration;
+
+        const template = document.getElementById('tpl-swipe-down');
+        const svg = template.content.querySelector('svg').cloneNode(true);
+
+        const handEl = svg.querySelector('.nges-el');
+        const arrowEl = svg.querySelector('.nges-arrow');
+
+        if (handEl) {
+          handEl.style.animationDelay = `-${seekTime}s`;
+          handEl.style.animationPlayState = 'paused';
+        }
+        if (arrowEl) {
+          arrowEl.style.animationDelay = `-${seekTime}s`;
+          arrowEl.style.animationPlayState = 'paused';
+        }
+
+        preview.innerHTML = '';
+        preview.appendChild(svg);
+        svg.offsetHeight;
+        await new Promise(r => setTimeout(r, 50));
+
+        const handStyle = handEl ? window.getComputedStyle(handEl) : null;
+        const arrowStyle = arrowEl ? window.getComputedStyle(arrowEl) : null;
+
+        // Parse full matrix for scale and translate
+        function parseMatrix(matrix) {
+          if (!matrix || matrix === 'none') return { scaleY: 1, translateY: 0 };
+          const match = matrix.match(/matrix\(([^)]+)\)/);
+          if (match) {
+            const v = match[1].split(',').map(x => parseFloat(x.trim()));
+            return { scaleY: v[3], translateY: v[5] };
+          }
+          return { scaleY: 1, translateY: 0 };
+        }
+
+        const hand = parseMatrix(handStyle?.transform);
+        const arrow = parseMatrix(arrowStyle?.transform);
+
+        // Calculate hand positions considering scale around transform-origin (108, 80)
+        // Fingertip is at origin, so it just translates
+        const fingerY = 80 + hand.translateY;
+        // Wrist is 90px below origin at rest, scaled then translated
+        const wristY = 80 + (90 * hand.scaleY) + hand.translateY;
+
+        // Arrow (scale 6, center at y=92)
+        // With scale 6: top offset = 42px, bottom offset = 42px
+        const arrowBaseY = 92 - 42 + arrow.translateY;  // top of arrow
+        const arrowPointY = 92 + 42 + arrow.translateY; // bottom of arrow
+
+        report += `${pct}%: `;
+        report += `finger=${fingerY.toFixed(0)} wrist=${wristY.toFixed(0)} | `;
+        report += `arrow: ${arrowBaseY.toFixed(0)}-${arrowPointY.toFixed(0)} | `;
+        report += `op=${parseFloat(arrowStyle?.opacity || 0).toFixed(2)}\n`;
+      }
+
+      report += `\n=== TARGET (at 55%) ===\n`;
+      report += `Hand: finger≈120, wrist≈203\n`;
+      report += `Arrow should: base=120, point=203\n`;
+      report += `Need: scale(6), center at y=92\n`;
+      report += `Arrow translateY: 70px (same as hand)\n`;
+
+      output.value = report;
+    });
+
+    // Copy diagnostic results
+    document.getElementById('copyDiagBtn').addEventListener('click', (e) => {
+      const output = document.getElementById('debugOutput');
+      output.select();
+      document.execCommand('copy');
+      e.target.textContent = 'Copied!';
+      setTimeout(() => e.target.textContent = 'Copy Results', 1200);
+    });
+
+    // Set initial preview size
+    const initialPreviewSize = sizeToPreview[selectedSize] || '50%';
+    document.querySelectorAll('.gesture-preview').forEach(preview => {
+      preview.style.setProperty('--preview-size', initialPreviewSize);
+    });
+
+    // Autoplay toggle
+    document.getElementById('autoplayOff').addEventListener('click', () => {
+      autoplay = false;
+      document.getElementById('autoplayOff').classList.add('active');
+      document.getElementById('autoplayOn').classList.remove('active');
+      // Stop all playing cards
+      document.querySelectorAll('.gesture-card').forEach(card => {
+        if (isPlaying(card)) {
+          stopPlaying(card);
+        }
+      });
+    });
+
+    document.getElementById('autoplayOn').addEventListener('click', () => {
+      autoplay = true;
+      document.getElementById('autoplayOn').classList.add('active');
+      document.getElementById('autoplayOff').classList.remove('active');
+      // Start playing all cards
+      document.querySelectorAll('.gesture-card').forEach(card => {
+        startPlaying(card);
+      });
+    });
+  </script>
+</body>
+</html>
