@@ -19,7 +19,7 @@
     }
 
     @media (prefers-color-scheme: dark) {
-      :root:not([data-theme="light"]) {
+      body:not(.light) {
         --bg: #0f172a;
         --bg-secondary: #1e293b;
         --text: #f1f5f9;
@@ -30,7 +30,7 @@
       }
     }
 
-    [data-theme="dark"] {
+    body.dark {
       --bg: #0f172a;
       --bg-secondary: #1e293b;
       --text: #f1f5f9;
@@ -182,29 +182,33 @@
       justify-content: center;
       color: var(--text);
       overflow: hidden;
+      --gesture-stroke: var(--text);
+      --gesture-fill: var(--bg);
     }
     .gesture-preview svg {
       width: var(--preview-size, 60%);
       height: var(--preview-size, 60%);
     }
     .gesture-card .copy-btn {
-      margin-top: 0.5rem;
+      margin: 0.5rem 0.25rem 0;
       padding: 0.35rem 0.75rem;
-      border: none;
+      border: 1px solid var(--border);
       border-radius: 0.375rem;
-      background: var(--accent);
-      color: var(--accent-text);
+      background: var(--bg);
+      color: var(--text-muted);
       font-size: 0.7rem;
       font-weight: 500;
       cursor: pointer;
       transition: all 0.15s;
-      align-self: center;
     }
     .gesture-card .copy-btn:hover {
-      filter: brightness(1.1);
+      background: var(--border);
+      color: var(--text);
     }
     .gesture-card .copy-btn.copied {
-      background: var(--accent);
+      background: #10b981;
+      border-color: #10b981;
+      color: white;
     }
     .gesture-name {
       margin-bottom: 0.5rem;
@@ -261,38 +265,6 @@
     .debug-toolbar .play-btn.playing {
       background: var(--accent);
       color: var(--accent-text);
-    }
-
-    /* Debug panel */
-    .debug-panel {
-      display: none;
-      max-width: 800px;
-      margin: 2rem auto;
-      padding: 1rem;
-      background: var(--bg-secondary);
-      border-radius: 0.75rem;
-    }
-    .debug-mode .debug-panel {
-      display: block;
-    }
-    .debug-panel h3 {
-      margin: 0 0 0.5rem;
-      font-size: 0.875rem;
-    }
-    .debug-panel textarea {
-      width: 100%;
-      height: 150px;
-      font-size: 0.7rem;
-      font-family: ui-monospace, monospace;
-      background: var(--bg);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 0.5rem;
-      padding: 0.5rem;
-      resize: vertical;
-    }
-    .debug-panel .pills {
-      margin-top: 0.5rem;
     }
 
     /* Usage section */
@@ -433,15 +405,6 @@
     <div class="grid" id="gestureGrid"></div>
   </main>
 
-  <!-- Debug Panel (hidden unless ?debug=1 or localhost) -->
-  <div class="debug-panel">
-    <h3>Animation Diagnostic</h3>
-    <textarea id="debugOutput" placeholder="Click 'Run Diagnostic' to analyze drag-down animation..."></textarea>
-    <div class="pills">
-      <button id="runDiagBtn">Run Diagnostic</button>
-      <button id="copyDiagBtn">Copy Results</button>
-    </div>
-  </div>
 
   <!-- Usage Section -->
   <section class="usage">
@@ -456,15 +419,15 @@
 
 <span class="comment">&lt;!-- Or use CSS custom properties --&gt;</span>
 &lt;svg style="
-  <span class="var">--nges-stroke</span>: <span class="val">#3b82f6</span>;
-  <span class="var">--nges-fill</span>: <span class="val">white</span>;
-  <span class="var">--nges-duration</span>: <span class="val">2s</span>;
+  <span class="var">--gesture-stroke</span>: <span class="val">#3b82f6</span>;
+  <span class="var">--gesture-fill</span>: <span class="val">white</span>;
+  <span class="var">--gesture-duration</span>: <span class="val">2s</span>;
 "&gt;...&lt;/svg&gt;</code></pre>
 
     <h3>Available variables</h3>
-    <pre><code><span class="var">--nges-stroke</span>     <span class="comment">/* Stroke color (default: currentColor) */</span>
-<span class="var">--nges-fill</span>       <span class="comment">/* Fill color (default: white) */</span>
-<span class="var">--nges-duration</span>   <span class="comment">/* Animation duration (default: 2.4s) */</span></code></pre>
+    <pre><code><span class="var">--gesture-stroke</span>     <span class="comment">/* Stroke color (default: currentColor) */</span>
+<span class="var">--gesture-fill</span>       <span class="comment">/* Fill color (default: white) */</span>
+<span class="var">--gesture-duration</span>   <span class="comment">/* Animation duration (default: 2.4s) */</span></code></pre>
   </section>
 
   <!-- Footer -->
@@ -494,19 +457,19 @@
   <template id="tpl-touch-drag-down">
     <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
       <style>
-        .nges-touch-drag-down { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
-        .nges-touch-drag-down path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
-        .nges-touch-drag-down .nges-el { transform-origin: 120px 120px; }
-        .nges-touch-drag-down .nges-indicator {
+        .gesture-touch-drag-down { --_d: var(--gesture-duration, 2.4s); --_s: var(--gesture-stroke, currentColor); --_f: var(--gesture-fill, white); }
+        .gesture-touch-drag-down path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
+        .gesture-touch-drag-down .gesture-el { transform-origin: 120px 120px; }
+        .gesture-touch-drag-down .gesture-indicator {
           fill: var(--_s);
           opacity: 0;
           transform-origin: 108px 53px;
         }
         @media (prefers-reduced-motion: no-preference) {
-          .nges-touch-drag-down .nges-el { animation: nges-touch-drag-down-el var(--_d) ease-in-out infinite; }
-          .nges-touch-drag-down .nges-indicator { animation: nges-touch-drag-down-ind var(--_d) ease-in-out infinite; }
+          .gesture-touch-drag-down .gesture-el { animation: gesture-touch-drag-down-el var(--_d) ease-in-out infinite; }
+          .gesture-touch-drag-down .gesture-indicator { animation: gesture-touch-drag-down-ind var(--_d) ease-in-out infinite; }
         }
-        @keyframes nges-touch-drag-down-el {
+        @keyframes gesture-touch-drag-down-el {
           0%, 5% { transform: translateY(0) scale(1); }
           15% { transform: translateY(-30px) scale(1); }
           20% { transform: translateY(-30px) scale(0.92); }
@@ -514,7 +477,7 @@
           65% { transform: translateY(40px) scale(1); }
           80%, 100% { transform: translateY(0) scale(1); }
         }
-        @keyframes nges-touch-drag-down-ind {
+        @keyframes gesture-touch-drag-down-ind {
           0%, 10% { transform: translateY(0) scale(0); opacity: 0; }
           20% { transform: translateY(0) scale(1); opacity: 0.35; }
           55% { transform: translateY(70px) scale(1); opacity: 0.35; }
@@ -522,9 +485,9 @@
           100% { transform: translateY(0) scale(0); opacity: 0; }
         }
       </style>
-      <g class="nges-touch-drag-down">
-        <circle class="nges-indicator" cx="108" cy="53" r="20" />
-        <g class="nges-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
+      <g class="gesture-touch-drag-down">
+        <circle class="gesture-indicator" cx="108" cy="53" r="20" />
+        <g class="gesture-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
           <path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5" /><path d="M11 11.5v-2a1.5 1.5 0 1 1 3 0v2.5" /><path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5" /><path d="M17 11.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47" />
         </g></g>
       </g>
@@ -534,19 +497,19 @@
   <template id="tpl-touch-drag-up">
     <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
       <style>
-        .nges-touch-drag-up { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
-        .nges-touch-drag-up path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
-        .nges-touch-drag-up .nges-el { transform-origin: 120px 120px; }
-        .nges-touch-drag-up .nges-indicator {
+        .gesture-touch-drag-up { --_d: var(--gesture-duration, 2.4s); --_s: var(--gesture-stroke, currentColor); --_f: var(--gesture-fill, white); }
+        .gesture-touch-drag-up path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
+        .gesture-touch-drag-up .gesture-el { transform-origin: 120px 120px; }
+        .gesture-touch-drag-up .gesture-indicator {
           fill: var(--_s);
           opacity: 0;
           transform-origin: 108px 113px;
         }
         @media (prefers-reduced-motion: no-preference) {
-          .nges-touch-drag-up .nges-el { animation: nges-touch-drag-up-el var(--_d) ease-in-out infinite; }
-          .nges-touch-drag-up .nges-indicator { animation: nges-touch-drag-up-ind var(--_d) ease-in-out infinite; }
+          .gesture-touch-drag-up .gesture-el { animation: gesture-touch-drag-up-el var(--_d) ease-in-out infinite; }
+          .gesture-touch-drag-up .gesture-indicator { animation: gesture-touch-drag-up-ind var(--_d) ease-in-out infinite; }
         }
-        @keyframes nges-touch-drag-up-el {
+        @keyframes gesture-touch-drag-up-el {
           0%, 5% { transform: translateY(0) scale(1); }
           15% { transform: translateY(30px) scale(1); }
           20% { transform: translateY(30px) scale(0.92); }
@@ -554,7 +517,7 @@
           65% { transform: translateY(-40px) scale(1); }
           80%, 100% { transform: translateY(0) scale(1); }
         }
-        @keyframes nges-touch-drag-up-ind {
+        @keyframes gesture-touch-drag-up-ind {
           0%, 10% { transform: translateY(0) scale(0); opacity: 0; }
           20% { transform: translateY(0) scale(1); opacity: 0.35; }
           55% { transform: translateY(-70px) scale(1); opacity: 0.35; }
@@ -562,9 +525,9 @@
           100% { transform: translateY(0) scale(0); opacity: 0; }
         }
       </style>
-      <g class="nges-touch-drag-up">
-        <circle class="nges-indicator" cx="108" cy="113" r="20" />
-        <g class="nges-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
+      <g class="gesture-touch-drag-up">
+        <circle class="gesture-indicator" cx="108" cy="113" r="20" />
+        <g class="gesture-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
           <path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5" /><path d="M11 11.5v-2a1.5 1.5 0 1 1 3 0v2.5" /><path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5" /><path d="M17 11.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47" />
         </g></g>
       </g>
@@ -574,19 +537,19 @@
   <template id="tpl-pointer-drag-down">
     <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
       <style>
-        .nges-pointer-drag-down { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
-        .nges-pointer-drag-down path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
-        .nges-pointer-drag-down .nges-el { transform-origin: 120px 120px; }
-        .nges-pointer-drag-down .nges-indicator {
+        .gesture-pointer-drag-down { --_d: var(--gesture-duration, 2.4s); --_s: var(--gesture-stroke, currentColor); --_f: var(--gesture-fill, white); }
+        .gesture-pointer-drag-down path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
+        .gesture-pointer-drag-down .gesture-el { transform-origin: 120px 120px; }
+        .gesture-pointer-drag-down .gesture-indicator {
           fill: var(--_s);
           opacity: 0;
           transform-origin: 80px 50px;
         }
         @media (prefers-reduced-motion: no-preference) {
-          .nges-pointer-drag-down .nges-el { animation: nges-pointer-drag-down-el var(--_d) ease-in-out infinite; }
-          .nges-pointer-drag-down .nges-indicator { animation: nges-pointer-drag-down-ind var(--_d) ease-in-out infinite; }
+          .gesture-pointer-drag-down .gesture-el { animation: gesture-pointer-drag-down-el var(--_d) ease-in-out infinite; }
+          .gesture-pointer-drag-down .gesture-indicator { animation: gesture-pointer-drag-down-ind var(--_d) ease-in-out infinite; }
         }
-        @keyframes nges-pointer-drag-down-el {
+        @keyframes gesture-pointer-drag-down-el {
           0%, 5% { transform: translateY(0) scale(1); }
           15% { transform: translateY(-30px) scale(1); }
           20% { transform: translateY(-30px) scale(0.92); }
@@ -594,7 +557,7 @@
           65% { transform: translateY(40px) scale(1); }
           80%, 100% { transform: translateY(0) scale(1); }
         }
-        @keyframes nges-pointer-drag-down-ind {
+        @keyframes gesture-pointer-drag-down-ind {
           0%, 10% { transform: translateY(0) scale(0); opacity: 0; }
           20% { transform: translateY(0) scale(1); opacity: 0.35; }
           55% { transform: translateY(70px) scale(1); opacity: 0.35; }
@@ -602,9 +565,9 @@
           100% { transform: translateY(0) scale(0); opacity: 0; }
         }
       </style>
-      <g class="nges-pointer-drag-down">
-        <circle class="nges-indicator" cx="80" cy="50" r="20" />
-        <g class="nges-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
+      <g class="gesture-pointer-drag-down">
+        <circle class="gesture-indicator" cx="80" cy="50" r="20" />
+        <g class="gesture-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
           <path d="M7.904 17.563a1.2 1.2 0 0 0 2.228 .308l2.09 -3.093l4.907 4.907a1.067 1.067 0 0 0 1.509 0l1.047 -1.047a1.067 1.067 0 0 0 0 -1.509l-4.907 -4.907l3.113 -2.09a1.2 1.2 0 0 0 -.309 -2.228l-13.582 -3.904l3.904 13.563" />
         </g></g>
       </g>
@@ -614,19 +577,19 @@
   <template id="tpl-pointer-drag-up">
     <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
       <style>
-        .nges-pointer-drag-up { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
-        .nges-pointer-drag-up path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
-        .nges-pointer-drag-up .nges-el { transform-origin: 120px 120px; }
-        .nges-pointer-drag-up .nges-indicator {
+        .gesture-pointer-drag-up { --_d: var(--gesture-duration, 2.4s); --_s: var(--gesture-stroke, currentColor); --_f: var(--gesture-fill, white); }
+        .gesture-pointer-drag-up path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
+        .gesture-pointer-drag-up .gesture-el { transform-origin: 120px 120px; }
+        .gesture-pointer-drag-up .gesture-indicator {
           fill: var(--_s);
           opacity: 0;
           transform-origin: 80px 110px;
         }
         @media (prefers-reduced-motion: no-preference) {
-          .nges-pointer-drag-up .nges-el { animation: nges-pointer-drag-up-el var(--_d) ease-in-out infinite; }
-          .nges-pointer-drag-up .nges-indicator { animation: nges-pointer-drag-up-ind var(--_d) ease-in-out infinite; }
+          .gesture-pointer-drag-up .gesture-el { animation: gesture-pointer-drag-up-el var(--_d) ease-in-out infinite; }
+          .gesture-pointer-drag-up .gesture-indicator { animation: gesture-pointer-drag-up-ind var(--_d) ease-in-out infinite; }
         }
-        @keyframes nges-pointer-drag-up-el {
+        @keyframes gesture-pointer-drag-up-el {
           0%, 5% { transform: translateY(0) scale(1); }
           15% { transform: translateY(30px) scale(1); }
           20% { transform: translateY(30px) scale(0.92); }
@@ -634,7 +597,7 @@
           65% { transform: translateY(-40px) scale(1); }
           80%, 100% { transform: translateY(0) scale(1); }
         }
-        @keyframes nges-pointer-drag-up-ind {
+        @keyframes gesture-pointer-drag-up-ind {
           0%, 10% { transform: translateY(0) scale(0); opacity: 0; }
           20% { transform: translateY(0) scale(1); opacity: 0.35; }
           55% { transform: translateY(-70px) scale(1); opacity: 0.35; }
@@ -642,9 +605,9 @@
           100% { transform: translateY(0) scale(0); opacity: 0; }
         }
       </style>
-      <g class="nges-pointer-drag-up">
-        <circle class="nges-indicator" cx="80" cy="110" r="20" />
-        <g class="nges-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
+      <g class="gesture-pointer-drag-up">
+        <circle class="gesture-indicator" cx="80" cy="110" r="20" />
+        <g class="gesture-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
           <path d="M7.904 17.563a1.2 1.2 0 0 0 2.228 .308l2.09 -3.093l4.907 4.907a1.067 1.067 0 0 0 1.509 0l1.047 -1.047a1.067 1.067 0 0 0 0 -1.509l-4.907 -4.907l3.113 -2.09a1.2 1.2 0 0 0 -.309 -2.228l-13.582 -3.904l3.904 13.563" />
         </g></g>
       </g>
@@ -654,19 +617,19 @@
   <template id="tpl-touch-drag-left">
     <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
       <style>
-        .nges-touch-drag-left { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
-        .nges-touch-drag-left path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
-        .nges-touch-drag-left .nges-el { transform-origin: 120px 120px; }
-        .nges-touch-drag-left .nges-indicator {
+        .gesture-touch-drag-left { --_d: var(--gesture-duration, 2.4s); --_s: var(--gesture-stroke, currentColor); --_f: var(--gesture-fill, white); }
+        .gesture-touch-drag-left path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
+        .gesture-touch-drag-left .gesture-el { transform-origin: 120px 120px; }
+        .gesture-touch-drag-left .gesture-indicator {
           fill: var(--_s);
           opacity: 0;
           transform-origin: 138px 83px;
         }
         @media (prefers-reduced-motion: no-preference) {
-          .nges-touch-drag-left .nges-el { animation: nges-touch-drag-left-el var(--_d) ease-in-out infinite; }
-          .nges-touch-drag-left .nges-indicator { animation: nges-touch-drag-left-ind var(--_d) ease-in-out infinite; }
+          .gesture-touch-drag-left .gesture-el { animation: gesture-touch-drag-left-el var(--_d) ease-in-out infinite; }
+          .gesture-touch-drag-left .gesture-indicator { animation: gesture-touch-drag-left-ind var(--_d) ease-in-out infinite; }
         }
-        @keyframes nges-touch-drag-left-el {
+        @keyframes gesture-touch-drag-left-el {
           0%, 5% { transform: translateX(0) scale(1); }
           15% { transform: translateX(30px) scale(1); }
           20% { transform: translateX(30px) scale(0.92); }
@@ -674,7 +637,7 @@
           65% { transform: translateX(-40px) scale(1); }
           80%, 100% { transform: translateX(0) scale(1); }
         }
-        @keyframes nges-touch-drag-left-ind {
+        @keyframes gesture-touch-drag-left-ind {
           0%, 10% { transform: translateX(0) scale(0); opacity: 0; }
           20% { transform: translateX(0) scale(1); opacity: 0.35; }
           55% { transform: translateX(-70px) scale(1); opacity: 0.35; }
@@ -682,9 +645,9 @@
           100% { transform: translateX(0) scale(0); opacity: 0; }
         }
       </style>
-      <g class="nges-touch-drag-left">
-        <circle class="nges-indicator" cx="138" cy="83" r="20" />
-        <g class="nges-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
+      <g class="gesture-touch-drag-left">
+        <circle class="gesture-indicator" cx="138" cy="83" r="20" />
+        <g class="gesture-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
           <path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5" /><path d="M11 11.5v-2a1.5 1.5 0 1 1 3 0v2.5" /><path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5" /><path d="M17 11.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47" />
         </g></g>
       </g>
@@ -694,19 +657,19 @@
   <template id="tpl-touch-drag-right">
     <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
       <style>
-        .nges-touch-drag-right { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
-        .nges-touch-drag-right path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
-        .nges-touch-drag-right .nges-el { transform-origin: 120px 120px; }
-        .nges-touch-drag-right .nges-indicator {
+        .gesture-touch-drag-right { --_d: var(--gesture-duration, 2.4s); --_s: var(--gesture-stroke, currentColor); --_f: var(--gesture-fill, white); }
+        .gesture-touch-drag-right path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
+        .gesture-touch-drag-right .gesture-el { transform-origin: 120px 120px; }
+        .gesture-touch-drag-right .gesture-indicator {
           fill: var(--_s);
           opacity: 0;
           transform-origin: 78px 83px;
         }
         @media (prefers-reduced-motion: no-preference) {
-          .nges-touch-drag-right .nges-el { animation: nges-touch-drag-right-el var(--_d) ease-in-out infinite; }
-          .nges-touch-drag-right .nges-indicator { animation: nges-touch-drag-right-ind var(--_d) ease-in-out infinite; }
+          .gesture-touch-drag-right .gesture-el { animation: gesture-touch-drag-right-el var(--_d) ease-in-out infinite; }
+          .gesture-touch-drag-right .gesture-indicator { animation: gesture-touch-drag-right-ind var(--_d) ease-in-out infinite; }
         }
-        @keyframes nges-touch-drag-right-el {
+        @keyframes gesture-touch-drag-right-el {
           0%, 5% { transform: translateX(0) scale(1); }
           15% { transform: translateX(-30px) scale(1); }
           20% { transform: translateX(-30px) scale(0.92); }
@@ -714,7 +677,7 @@
           65% { transform: translateX(40px) scale(1); }
           80%, 100% { transform: translateX(0) scale(1); }
         }
-        @keyframes nges-touch-drag-right-ind {
+        @keyframes gesture-touch-drag-right-ind {
           0%, 10% { transform: translateX(0) scale(0); opacity: 0; }
           20% { transform: translateX(0) scale(1); opacity: 0.35; }
           55% { transform: translateX(70px) scale(1); opacity: 0.35; }
@@ -722,9 +685,9 @@
           100% { transform: translateX(0) scale(0); opacity: 0; }
         }
       </style>
-      <g class="nges-touch-drag-right">
-        <circle class="nges-indicator" cx="78" cy="83" r="20" />
-        <g class="nges-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
+      <g class="gesture-touch-drag-right">
+        <circle class="gesture-indicator" cx="78" cy="83" r="20" />
+        <g class="gesture-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
           <path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5" /><path d="M11 11.5v-2a1.5 1.5 0 1 1 3 0v2.5" /><path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5" /><path d="M17 11.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47" />
         </g></g>
       </g>
@@ -734,19 +697,19 @@
   <template id="tpl-pointer-drag-left">
     <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
       <style>
-        .nges-pointer-drag-left { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
-        .nges-pointer-drag-left path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
-        .nges-pointer-drag-left .nges-el { transform-origin: 120px 120px; }
-        .nges-pointer-drag-left .nges-indicator {
+        .gesture-pointer-drag-left { --_d: var(--gesture-duration, 2.4s); --_s: var(--gesture-stroke, currentColor); --_f: var(--gesture-fill, white); }
+        .gesture-pointer-drag-left path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
+        .gesture-pointer-drag-left .gesture-el { transform-origin: 120px 120px; }
+        .gesture-pointer-drag-left .gesture-indicator {
           fill: var(--_s);
           opacity: 0;
           transform-origin: 110px 80px;
         }
         @media (prefers-reduced-motion: no-preference) {
-          .nges-pointer-drag-left .nges-el { animation: nges-pointer-drag-left-el var(--_d) ease-in-out infinite; }
-          .nges-pointer-drag-left .nges-indicator { animation: nges-pointer-drag-left-ind var(--_d) ease-in-out infinite; }
+          .gesture-pointer-drag-left .gesture-el { animation: gesture-pointer-drag-left-el var(--_d) ease-in-out infinite; }
+          .gesture-pointer-drag-left .gesture-indicator { animation: gesture-pointer-drag-left-ind var(--_d) ease-in-out infinite; }
         }
-        @keyframes nges-pointer-drag-left-el {
+        @keyframes gesture-pointer-drag-left-el {
           0%, 5% { transform: translateX(0) scale(1); }
           15% { transform: translateX(30px) scale(1); }
           20% { transform: translateX(30px) scale(0.92); }
@@ -754,7 +717,7 @@
           65% { transform: translateX(-40px) scale(1); }
           80%, 100% { transform: translateX(0) scale(1); }
         }
-        @keyframes nges-pointer-drag-left-ind {
+        @keyframes gesture-pointer-drag-left-ind {
           0%, 10% { transform: translateX(0) scale(0); opacity: 0; }
           20% { transform: translateX(0) scale(1); opacity: 0.35; }
           55% { transform: translateX(-70px) scale(1); opacity: 0.35; }
@@ -762,9 +725,9 @@
           100% { transform: translateX(0) scale(0); opacity: 0; }
         }
       </style>
-      <g class="nges-pointer-drag-left">
-        <circle class="nges-indicator" cx="110" cy="80" r="20" />
-        <g class="nges-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
+      <g class="gesture-pointer-drag-left">
+        <circle class="gesture-indicator" cx="110" cy="80" r="20" />
+        <g class="gesture-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
           <path d="M7.904 17.563a1.2 1.2 0 0 0 2.228 .308l2.09 -3.093l4.907 4.907a1.067 1.067 0 0 0 1.509 0l1.047 -1.047a1.067 1.067 0 0 0 0 -1.509l-4.907 -4.907l3.113 -2.09a1.2 1.2 0 0 0 -.309 -2.228l-13.582 -3.904l3.904 13.563" />
         </g></g>
       </g>
@@ -774,19 +737,19 @@
   <template id="tpl-pointer-drag-right">
     <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
       <style>
-        .nges-pointer-drag-right { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
-        .nges-pointer-drag-right path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
-        .nges-pointer-drag-right .nges-el { transform-origin: 120px 120px; }
-        .nges-pointer-drag-right .nges-indicator {
+        .gesture-pointer-drag-right { --_d: var(--gesture-duration, 2.4s); --_s: var(--gesture-stroke, currentColor); --_f: var(--gesture-fill, white); }
+        .gesture-pointer-drag-right path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
+        .gesture-pointer-drag-right .gesture-el { transform-origin: 120px 120px; }
+        .gesture-pointer-drag-right .gesture-indicator {
           fill: var(--_s);
           opacity: 0;
           transform-origin: 50px 80px;
         }
         @media (prefers-reduced-motion: no-preference) {
-          .nges-pointer-drag-right .nges-el { animation: nges-pointer-drag-right-el var(--_d) ease-in-out infinite; }
-          .nges-pointer-drag-right .nges-indicator { animation: nges-pointer-drag-right-ind var(--_d) ease-in-out infinite; }
+          .gesture-pointer-drag-right .gesture-el { animation: gesture-pointer-drag-right-el var(--_d) ease-in-out infinite; }
+          .gesture-pointer-drag-right .gesture-indicator { animation: gesture-pointer-drag-right-ind var(--_d) ease-in-out infinite; }
         }
-        @keyframes nges-pointer-drag-right-el {
+        @keyframes gesture-pointer-drag-right-el {
           0%, 5% { transform: translateX(0) scale(1); }
           15% { transform: translateX(-30px) scale(1); }
           20% { transform: translateX(-30px) scale(0.92); }
@@ -794,7 +757,7 @@
           65% { transform: translateX(40px) scale(1); }
           80%, 100% { transform: translateX(0) scale(1); }
         }
-        @keyframes nges-pointer-drag-right-ind {
+        @keyframes gesture-pointer-drag-right-ind {
           0%, 10% { transform: translateX(0) scale(0); opacity: 0; }
           20% { transform: translateX(0) scale(1); opacity: 0.35; }
           55% { transform: translateX(70px) scale(1); opacity: 0.35; }
@@ -802,9 +765,9 @@
           100% { transform: translateX(0) scale(0); opacity: 0; }
         }
       </style>
-      <g class="nges-pointer-drag-right">
-        <circle class="nges-indicator" cx="50" cy="80" r="20" />
-        <g class="nges-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
+      <g class="gesture-pointer-drag-right">
+        <circle class="gesture-indicator" cx="50" cy="80" r="20" />
+        <g class="gesture-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
           <path d="M7.904 17.563a1.2 1.2 0 0 0 2.228 .308l2.09 -3.093l4.907 4.907a1.067 1.067 0 0 0 1.509 0l1.047 -1.047a1.067 1.067 0 0 0 0 -1.509l-4.907 -4.907l3.113 -2.09a1.2 1.2 0 0 0 -.309 -2.228l-13.582 -3.904l3.904 13.563" />
         </g></g>
       </g>
@@ -814,20 +777,20 @@
   <template id="tpl-touch-tap">
     <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
       <style>
-        .nges-touch-tap { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
-        .nges-touch-tap path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
-        .nges-touch-tap .nges-el { transform-origin: 120px 120px; }
-        .nges-touch-tap .nges-indicator { fill: var(--_s); opacity: 0; transform-origin: 108px 83px; }
+        .gesture-touch-tap { --_d: var(--gesture-duration, 2.4s); --_s: var(--gesture-stroke, currentColor); --_f: var(--gesture-fill, white); }
+        .gesture-touch-tap path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
+        .gesture-touch-tap .gesture-el { transform-origin: 120px 120px; }
+        .gesture-touch-tap .gesture-indicator { fill: var(--_s); opacity: 0; transform-origin: 108px 83px; }
         @media (prefers-reduced-motion: no-preference) {
-          .nges-touch-tap .nges-el { animation: nges-touch-tap-el var(--_d) ease-in-out infinite; }
-          .nges-touch-tap .nges-indicator { animation: nges-touch-tap-ind var(--_d) ease-out infinite; }
+          .gesture-touch-tap .gesture-el { animation: gesture-touch-tap-el var(--_d) ease-in-out infinite; }
+          .gesture-touch-tap .gesture-indicator { animation: gesture-touch-tap-ind var(--_d) ease-out infinite; }
         }
-        @keyframes nges-touch-tap-el {
+        @keyframes gesture-touch-tap-el {
           0%, 3% { transform: scale(1); }
           12% { transform: scale(0.92); }
           25%, 100% { transform: scale(1); }
         }
-        @keyframes nges-touch-tap-ind {
+        @keyframes gesture-touch-tap-ind {
           0%, 11% { transform: scale(0.5); opacity: 0; }
           12% { transform: scale(0.5); opacity: 0.35; }
           25% { transform: scale(1); opacity: 0.2; }
@@ -835,9 +798,9 @@
           100% { transform: scale(1); opacity: 0; }
         }
       </style>
-      <g class="nges-touch-tap">
-        <circle class="nges-indicator" cx="108" cy="83" r="20" />
-        <g class="nges-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
+      <g class="gesture-touch-tap">
+        <circle class="gesture-indicator" cx="108" cy="83" r="20" />
+        <g class="gesture-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
           <path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5" />
           <path d="M11 11.5v-2a1.5 1.5 0 1 1 3 0v2.5" />
           <path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5" />
@@ -850,20 +813,20 @@
   <template id="tpl-pointer-click">
     <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
       <style>
-        .nges-pointer-click { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
-        .nges-pointer-click path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
-        .nges-pointer-click .nges-el { transform-origin: 120px 120px; }
-        .nges-pointer-click .nges-indicator { fill: var(--_s); opacity: 0; transform-origin: 80px 80px; }
+        .gesture-pointer-click { --_d: var(--gesture-duration, 2.4s); --_s: var(--gesture-stroke, currentColor); --_f: var(--gesture-fill, white); }
+        .gesture-pointer-click path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
+        .gesture-pointer-click .gesture-el { transform-origin: 120px 120px; }
+        .gesture-pointer-click .gesture-indicator { fill: var(--_s); opacity: 0; transform-origin: 80px 80px; }
         @media (prefers-reduced-motion: no-preference) {
-          .nges-pointer-click .nges-el { animation: nges-pointer-click-el var(--_d) ease-in-out infinite; }
-          .nges-pointer-click .nges-indicator { animation: nges-pointer-click-ind var(--_d) ease-out infinite; }
+          .gesture-pointer-click .gesture-el { animation: gesture-pointer-click-el var(--_d) ease-in-out infinite; }
+          .gesture-pointer-click .gesture-indicator { animation: gesture-pointer-click-ind var(--_d) ease-out infinite; }
         }
-        @keyframes nges-pointer-click-el {
+        @keyframes gesture-pointer-click-el {
           0%, 3% { transform: scale(1); }
           12% { transform: scale(0.92); }
           25%, 100% { transform: scale(1); }
         }
-        @keyframes nges-pointer-click-ind {
+        @keyframes gesture-pointer-click-ind {
           0%, 11% { transform: scale(0.5); opacity: 0; }
           12% { transform: scale(0.5); opacity: 0.35; }
           25% { transform: scale(1); opacity: 0.2; }
@@ -871,9 +834,9 @@
           100% { transform: scale(1); opacity: 0; }
         }
       </style>
-      <g class="nges-pointer-click">
-        <circle class="nges-indicator" cx="80" cy="80" r="20" />
-        <g class="nges-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
+      <g class="gesture-pointer-click">
+        <circle class="gesture-indicator" cx="80" cy="80" r="20" />
+        <g class="gesture-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
           <path d="M7.904 17.563a1.2 1.2 0 0 0 2.228 .308l2.09 -3.093l4.907 4.907a1.067 1.067 0 0 0 1.509 0l1.047 -1.047a1.067 1.067 0 0 0 0 -1.509l-4.907 -4.907l3.113 -2.09a1.2 1.2 0 0 0 -.309 -2.228l-13.582 -3.904l3.904 13.563" />
         </g></g>
       </g>
@@ -883,22 +846,22 @@
   <template id="tpl-touch-double-tap">
     <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
       <style>
-        .nges-touch-double-tap { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
-        .nges-touch-double-tap path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
-        .nges-touch-double-tap .nges-el { transform-origin: 120px 120px; }
-        .nges-touch-double-tap .nges-indicator { fill: var(--_s); opacity: 0; transform-origin: 108px 83px; }
+        .gesture-touch-double-tap { --_d: var(--gesture-duration, 2.4s); --_s: var(--gesture-stroke, currentColor); --_f: var(--gesture-fill, white); }
+        .gesture-touch-double-tap path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
+        .gesture-touch-double-tap .gesture-el { transform-origin: 120px 120px; }
+        .gesture-touch-double-tap .gesture-indicator { fill: var(--_s); opacity: 0; transform-origin: 108px 83px; }
         @media (prefers-reduced-motion: no-preference) {
-          .nges-touch-double-tap .nges-el { animation: nges-touch-double-tap-el var(--_d) ease-in-out infinite; }
-          .nges-touch-double-tap .nges-indicator { animation: nges-touch-double-tap-ind var(--_d) ease-out infinite; }
+          .gesture-touch-double-tap .gesture-el { animation: gesture-touch-double-tap-el var(--_d) ease-in-out infinite; }
+          .gesture-touch-double-tap .gesture-indicator { animation: gesture-touch-double-tap-ind var(--_d) ease-out infinite; }
         }
-        @keyframes nges-touch-double-tap-el {
+        @keyframes gesture-touch-double-tap-el {
           0%, 5% { transform: scale(1); }
           10% { transform: scale(0.92); }
           15% { transform: scale(1); }
           20% { transform: scale(0.92); }
           25%, 100% { transform: scale(1); }
         }
-        @keyframes nges-touch-double-tap-ind {
+        @keyframes gesture-touch-double-tap-ind {
           0%, 9% { transform: scale(0.5); opacity: 0; }
           10% { transform: scale(0.5); opacity: 0.35; }
           15% { transform: scale(0.8); opacity: 0.15; }
@@ -909,9 +872,9 @@
           100% { transform: scale(1); opacity: 0; }
         }
       </style>
-      <g class="nges-touch-double-tap">
-        <circle class="nges-indicator" cx="108" cy="83" r="20" />
-        <g class="nges-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
+      <g class="gesture-touch-double-tap">
+        <circle class="gesture-indicator" cx="108" cy="83" r="20" />
+        <g class="gesture-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
           <path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5" />
           <path d="M11 11.5v-2a1.5 1.5 0 1 1 3 0v2.5" />
           <path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5" />
@@ -924,22 +887,22 @@
   <template id="tpl-pointer-double-click">
     <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
       <style>
-        .nges-pointer-double-click { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
-        .nges-pointer-double-click path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
-        .nges-pointer-double-click .nges-el { transform-origin: 120px 120px; }
-        .nges-pointer-double-click .nges-indicator { fill: var(--_s); opacity: 0; transform-origin: 80px 80px; }
+        .gesture-pointer-double-click { --_d: var(--gesture-duration, 2.4s); --_s: var(--gesture-stroke, currentColor); --_f: var(--gesture-fill, white); }
+        .gesture-pointer-double-click path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
+        .gesture-pointer-double-click .gesture-el { transform-origin: 120px 120px; }
+        .gesture-pointer-double-click .gesture-indicator { fill: var(--_s); opacity: 0; transform-origin: 80px 80px; }
         @media (prefers-reduced-motion: no-preference) {
-          .nges-pointer-double-click .nges-el { animation: nges-pointer-double-click-el var(--_d) ease-in-out infinite; }
-          .nges-pointer-double-click .nges-indicator { animation: nges-pointer-double-click-ind var(--_d) ease-out infinite; }
+          .gesture-pointer-double-click .gesture-el { animation: gesture-pointer-double-click-el var(--_d) ease-in-out infinite; }
+          .gesture-pointer-double-click .gesture-indicator { animation: gesture-pointer-double-click-ind var(--_d) ease-out infinite; }
         }
-        @keyframes nges-pointer-double-click-el {
+        @keyframes gesture-pointer-double-click-el {
           0%, 5% { transform: scale(1); }
           10% { transform: scale(0.92); }
           15% { transform: scale(1); }
           20% { transform: scale(0.92); }
           25%, 100% { transform: scale(1); }
         }
-        @keyframes nges-pointer-double-click-ind {
+        @keyframes gesture-pointer-double-click-ind {
           0%, 9% { transform: scale(0.5); opacity: 0; }
           10% { transform: scale(0.5); opacity: 0.35; }
           15% { transform: scale(0.8); opacity: 0.15; }
@@ -950,9 +913,9 @@
           100% { transform: scale(1); opacity: 0; }
         }
       </style>
-      <g class="nges-pointer-double-click">
-        <circle class="nges-indicator" cx="80" cy="80" r="20" />
-        <g class="nges-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
+      <g class="gesture-pointer-double-click">
+        <circle class="gesture-indicator" cx="80" cy="80" r="20" />
+        <g class="gesture-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
           <path d="M7.904 17.563a1.2 1.2 0 0 0 2.228 .308l2.09 -3.093l4.907 4.907a1.067 1.067 0 0 0 1.509 0l1.047 -1.047a1.067 1.067 0 0 0 0 -1.509l-4.907 -4.907l3.113 -2.09a1.2 1.2 0 0 0 -.309 -2.228l-13.582 -3.904l3.904 13.563" />
         </g></g>
       </g>
@@ -962,11 +925,11 @@
   <template id="tpl-touch-long-press">
     <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
       <style>
-        .nges-touch-long-press { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
-        .nges-touch-long-press path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
-        .nges-touch-long-press .nges-el { transform-origin: 120px 120px; }
-        .nges-touch-long-press .nges-indicator { fill: var(--_s); opacity: 0; transform-origin: 108px 83px; }
-        .nges-touch-long-press .nges-ring {
+        .gesture-touch-long-press { --_d: var(--gesture-duration, 2.4s); --_s: var(--gesture-stroke, currentColor); --_f: var(--gesture-fill, white); }
+        .gesture-touch-long-press path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
+        .gesture-touch-long-press .gesture-el { transform-origin: 120px 120px; }
+        .gesture-touch-long-press .gesture-indicator { fill: var(--_s); opacity: 0; transform-origin: 108px 83px; }
+        .gesture-touch-long-press .gesture-ring {
           fill: none;
           stroke: var(--_s);
           stroke-width: 3;
@@ -977,24 +940,24 @@
           stroke-dashoffset: 126;
         }
         @media (prefers-reduced-motion: no-preference) {
-          .nges-touch-long-press .nges-el { animation: nges-touch-long-press-el var(--_d) ease-in-out infinite; }
-          .nges-touch-long-press .nges-indicator { animation: nges-touch-long-press-ind var(--_d) ease-out infinite; }
-          .nges-touch-long-press .nges-ring { animation: nges-touch-long-press-ring var(--_d) ease-out infinite; }
+          .gesture-touch-long-press .gesture-el { animation: gesture-touch-long-press-el var(--_d) ease-in-out infinite; }
+          .gesture-touch-long-press .gesture-indicator { animation: gesture-touch-long-press-ind var(--_d) ease-out infinite; }
+          .gesture-touch-long-press .gesture-ring { animation: gesture-touch-long-press-ring var(--_d) ease-out infinite; }
         }
-        @keyframes nges-touch-long-press-el {
+        @keyframes gesture-touch-long-press-el {
           0%, 5% { transform: scale(1); }
           12% { transform: scale(0.92); }
           55% { transform: scale(0.92); }
           65%, 100% { transform: scale(1); }
         }
-        @keyframes nges-touch-long-press-ind {
+        @keyframes gesture-touch-long-press-ind {
           0%, 11% { transform: scale(0.5); opacity: 0; }
           12% { transform: scale(0.5); opacity: 0.35; }
           55% { transform: scale(0.5); opacity: 0.35; }
           65% { transform: scale(1); opacity: 0; }
           100% { transform: scale(1); opacity: 0; }
         }
-        @keyframes nges-touch-long-press-ring {
+        @keyframes gesture-touch-long-press-ring {
           0%, 11% { stroke-dashoffset: 126; opacity: 0; }
           12% { stroke-dashoffset: 126; opacity: 0.5; }
           55% { stroke-dashoffset: 0; opacity: 0.5; }
@@ -1002,10 +965,10 @@
           100% { stroke-dashoffset: 126; opacity: 0; }
         }
       </style>
-      <g class="nges-touch-long-press">
-        <circle class="nges-ring" cx="108" cy="83" r="20" />
-        <circle class="nges-indicator" cx="108" cy="83" r="20" />
-        <g class="nges-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
+      <g class="gesture-touch-long-press">
+        <circle class="gesture-ring" cx="108" cy="83" r="20" />
+        <circle class="gesture-indicator" cx="108" cy="83" r="20" />
+        <g class="gesture-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
           <path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5" />
           <path d="M11 11.5v-2a1.5 1.5 0 1 1 3 0v2.5" />
           <path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5" />
@@ -1018,11 +981,11 @@
   <template id="tpl-pointer-long-press">
     <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
       <style>
-        .nges-pointer-long-press { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
-        .nges-pointer-long-press path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
-        .nges-pointer-long-press .nges-el { transform-origin: 120px 120px; }
-        .nges-pointer-long-press .nges-indicator { fill: var(--_s); opacity: 0; transform-origin: 80px 80px; }
-        .nges-pointer-long-press .nges-ring {
+        .gesture-pointer-long-press { --_d: var(--gesture-duration, 2.4s); --_s: var(--gesture-stroke, currentColor); --_f: var(--gesture-fill, white); }
+        .gesture-pointer-long-press path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
+        .gesture-pointer-long-press .gesture-el { transform-origin: 120px 120px; }
+        .gesture-pointer-long-press .gesture-indicator { fill: var(--_s); opacity: 0; transform-origin: 80px 80px; }
+        .gesture-pointer-long-press .gesture-ring {
           fill: none;
           stroke: var(--_s);
           stroke-width: 3;
@@ -1033,24 +996,24 @@
           stroke-dashoffset: 126;
         }
         @media (prefers-reduced-motion: no-preference) {
-          .nges-pointer-long-press .nges-el { animation: nges-pointer-long-press-el var(--_d) ease-in-out infinite; }
-          .nges-pointer-long-press .nges-indicator { animation: nges-pointer-long-press-ind var(--_d) ease-out infinite; }
-          .nges-pointer-long-press .nges-ring { animation: nges-pointer-long-press-ring var(--_d) ease-out infinite; }
+          .gesture-pointer-long-press .gesture-el { animation: gesture-pointer-long-press-el var(--_d) ease-in-out infinite; }
+          .gesture-pointer-long-press .gesture-indicator { animation: gesture-pointer-long-press-ind var(--_d) ease-out infinite; }
+          .gesture-pointer-long-press .gesture-ring { animation: gesture-pointer-long-press-ring var(--_d) ease-out infinite; }
         }
-        @keyframes nges-pointer-long-press-el {
+        @keyframes gesture-pointer-long-press-el {
           0%, 5% { transform: scale(1); }
           12% { transform: scale(0.92); }
           55% { transform: scale(0.92); }
           65%, 100% { transform: scale(1); }
         }
-        @keyframes nges-pointer-long-press-ind {
+        @keyframes gesture-pointer-long-press-ind {
           0%, 11% { transform: scale(0.5); opacity: 0; }
           12% { transform: scale(0.5); opacity: 0.35; }
           55% { transform: scale(0.5); opacity: 0.35; }
           65% { transform: scale(1); opacity: 0; }
           100% { transform: scale(1); opacity: 0; }
         }
-        @keyframes nges-pointer-long-press-ring {
+        @keyframes gesture-pointer-long-press-ring {
           0%, 11% { stroke-dashoffset: 126; opacity: 0; }
           12% { stroke-dashoffset: 126; opacity: 0.5; }
           55% { stroke-dashoffset: 0; opacity: 0.5; }
@@ -1058,10 +1021,10 @@
           100% { stroke-dashoffset: 126; opacity: 0; }
         }
       </style>
-      <g class="nges-pointer-long-press">
-        <circle class="nges-ring" cx="80" cy="80" r="20" />
-        <circle class="nges-indicator" cx="80" cy="80" r="20" />
-        <g class="nges-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
+      <g class="gesture-pointer-long-press">
+        <circle class="gesture-ring" cx="80" cy="80" r="20" />
+        <circle class="gesture-indicator" cx="80" cy="80" r="20" />
+        <g class="gesture-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
           <path d="M7.904 17.563a1.2 1.2 0 0 0 2.228 .308l2.09 -3.093l4.907 4.907a1.067 1.067 0 0 0 1.509 0l1.047 -1.047a1.067 1.067 0 0 0 0 -1.509l-4.907 -4.907l3.113 -2.09a1.2 1.2 0 0 0 -.309 -2.228l-13.582 -3.904l3.904 13.563" />
         </g></g>
       </g>
@@ -1138,7 +1101,7 @@
             if (!autoplay) {
               const svg = preview.querySelector('svg');
               if (svg) {
-                svg.querySelectorAll('.nges-el, .nges-indicator, .nges-ring').forEach(el => {
+                svg.querySelectorAll('.gesture-el, .gesture-indicator, .gesture-ring').forEach(el => {
                   el.style.animationPlayState = 'running';
                 });
               }
@@ -1148,7 +1111,7 @@
             if (!autoplay) {
               const svg = preview.querySelector('svg');
               if (svg) {
-                svg.querySelectorAll('.nges-el, .nges-indicator, .nges-ring').forEach(el => {
+                svg.querySelectorAll('.gesture-el, .gesture-indicator, .gesture-ring').forEach(el => {
                   el.style.animationPlayState = 'paused';
                 });
               }
@@ -1160,17 +1123,15 @@
       });
     }
 
-    function getGestureDuration(gestureId) {
-      return 2.4;
-    }
+    const GESTURE_DURATION = 2.4;
 
     function insertFreshSvg(container, gestureId, playing, seekPercent = 0) {
       const template = document.getElementById('tpl-' + gestureId);
       const svg = template.content.querySelector('svg').cloneNode(true);
-      const duration = getGestureDuration(gestureId);
+      const duration = GESTURE_DURATION;
       const seekTime = (seekPercent / 100) * duration;
 
-      svg.querySelectorAll('.nges-el, .nges-indicator, .nges-ring').forEach(el => {
+      svg.querySelectorAll('.gesture-el, .gesture-indicator, .gesture-ring').forEach(el => {
         el.style.animationDelay = `-${seekTime}s`;
         if (!playing) {
           el.style.animationPlayState = 'paused';
@@ -1191,7 +1152,7 @@
       const scrubber = card.querySelector('.scrub-range');
       const valDisplay = card.querySelector('.scrub-val');
       const playBtn = card.querySelector('.play-btn');
-      const duration = getGestureDuration(gestureId) * 1000;
+      const duration = GESTURE_DURATION * 1000;
 
       stopPlaying(card);
 
@@ -1263,29 +1224,34 @@
     const themeIconLight = document.getElementById('themeIconLight');
     const themeIconDark = document.getElementById('themeIconDark');
 
-    function updateThemeIcon() {
-      const isDark = document.documentElement.dataset.theme === 'dark' ||
-        (document.documentElement.dataset.theme !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-      themeIconLight.style.display = isDark ? 'none' : 'block';
-      themeIconDark.style.display = isDark ? 'block' : 'none';
+    function getEffectiveTheme() {
+      const saved = localStorage.getItem('theme');
+      if (saved === 'dark' || saved === 'light') return saved;
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
 
-    themeToggle.addEventListener('click', () => {
-      const current = document.documentElement.dataset.theme;
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    function applyTheme(theme) {
+      document.body.classList.remove('dark', 'light');
+      document.body.classList.add(theme);
+      themeIconLight.style.display = theme === 'dark' ? 'none' : 'block';
+      themeIconDark.style.display = theme === 'dark' ? 'block' : 'none';
+    }
 
-      if (!current) {
-        document.documentElement.dataset.theme = prefersDark ? 'light' : 'dark';
-      } else if (current === 'dark') {
-        document.documentElement.dataset.theme = 'light';
-      } else {
-        document.documentElement.dataset.theme = 'dark';
-      }
-      updateThemeIcon();
+    // Apply saved or system theme on load
+    applyTheme(getEffectiveTheme());
+
+    themeToggle.addEventListener('click', () => {
+      const newTheme = getEffectiveTheme() === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('theme', newTheme);
+      applyTheme(newTheme);
     });
 
-    updateThemeIcon();
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateThemeIcon);
+    // Update if system preference changes (only if no saved preference)
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+      if (!localStorage.getItem('theme')) {
+        applyTheme(getEffectiveTheme());
+      }
+    });
 
     // Scrubber handler (debug mode)
     gestureGrid.addEventListener('input', e => {
@@ -1371,12 +1337,12 @@ Nice Gestures is a collection of copy-paste SVG gesture animations. No JavaScrip
 
 ## Available Gestures
 Pointer gestures (cursor icon):
-- pointer-click (mouse click with ripple)
-- pointer-drag-down, pointer-drag-up (mouse drag)
+- pointer-click, pointer-double-click, pointer-long-press
+- pointer-drag-down, pointer-drag-up, pointer-drag-left, pointer-drag-right
 
 Touch gestures (hand icon):
-- touch-drag-down, touch-drag-up (touch drag)
-- touch-tap (finger tap with ripple)
+- touch-tap, touch-double-tap, touch-long-press
+- touch-drag-down, touch-drag-up, touch-drag-left, touch-drag-right
 
 ## Usage
 1. Copy any gesture SVG from https://nicegestures.gingersoul.co
@@ -1385,9 +1351,9 @@ Touch gestures (hand icon):
 
 \`\`\`html
 <svg style="
-  --nges-stroke: #3b82f6;  /* Stroke color (default: currentColor) */
-  --nges-fill: white;       /* Fill color (default: white) */
-  --nges-duration: 2s;      /* Animation duration (default: 2.4s) */
+  --gesture-stroke: #3b82f6;  /* Stroke color (default: currentColor) */
+  --gesture-fill: white;       /* Fill color (default: white) */
+  --gesture-duration: 2s;      /* Animation duration (default: 2.4s) */
 ">...</svg>
 \`\`\`
 
@@ -1407,67 +1373,6 @@ https://github.com/gingersoulrecords/nicegestures`;
       }, 1200);
     }
 
-    // Debug diagnostic
-    document.getElementById('runDiagBtn')?.addEventListener('click', async () => {
-      const output = document.getElementById('debugOutput');
-      output.value = 'Running diagnostic...\n';
-
-      const card = document.querySelector('[data-gesture="touch-drag-down"]');
-      if (!card) {
-        output.value = 'drag-down gesture not found';
-        return;
-      }
-
-      const preview = card.querySelector('.gesture-preview');
-      const duration = getGestureDuration('touch-drag-down');
-      const checkPoints = [0, 10, 15, 20, 40, 55, 65, 80, 100];
-
-      let report = `DRAG-DOWN ANIMATION\nDuration: ${duration}s\n\n`;
-
-      for (const pct of checkPoints) {
-        const seekTime = (pct / 100) * duration;
-        const template = document.getElementById('tpl-drag-down');
-        const svg = template.content.querySelector('svg').cloneNode(true);
-
-        const handEl = svg.querySelector('.nges-el');
-        const touchEl = svg.querySelector('.nges-touch');
-        const arrowEl = svg.querySelector('.nges-arrow');
-
-        [handEl, touchEl, arrowEl].forEach(el => {
-          if (el) {
-            el.style.animationDelay = `-${seekTime}s`;
-            el.style.animationPlayState = 'paused';
-          }
-        });
-
-        preview.innerHTML = '';
-        preview.appendChild(svg);
-        svg.offsetHeight;
-        await new Promise(r => setTimeout(r, 30));
-
-        const getTransform = el => {
-          if (!el) return 'n/a';
-          const style = window.getComputedStyle(el);
-          return style.transform === 'none' ? 'none' : style.transform;
-        };
-        const getOpacity = el => {
-          if (!el) return 'n/a';
-          return parseFloat(window.getComputedStyle(el).opacity).toFixed(2);
-        };
-
-        report += `${pct}%: hand=${getTransform(handEl)} | touch op=${getOpacity(touchEl)} | arrow op=${getOpacity(arrowEl)}\n`;
-      }
-
-      output.value = report;
-    });
-
-    document.getElementById('copyDiagBtn')?.addEventListener('click', (e) => {
-      const output = document.getElementById('debugOutput');
-      output.select();
-      document.execCommand('copy');
-      e.target.textContent = 'Copied!';
-      setTimeout(() => e.target.textContent = 'Copy Results', 1200);
-    });
 
     // Initial render
     renderGestures();
