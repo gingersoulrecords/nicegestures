@@ -5,13 +5,13 @@ Nice Gestures is a collection of copy-paste SVG gesture animations. No JavaScrip
 
 ## Available Gestures
 
-### Touch Gestures (hand icon)
-- `drag-down`, `drag-up` - Touch drag with directional arrow
-- `tap` - Finger tap with ripple effect
-
 ### Pointer Gestures (cursor icon)
+- `pointer-click` - Mouse click with ripple effect
 - `pointer-drag-down`, `pointer-drag-up` - Mouse drag
-- `click` - Mouse click with ripple effect
+
+### Touch Gestures (hand icon)
+- `touch-drag-down`, `touch-drag-up` - Touch drag
+- `touch-tap` - Finger tap with ripple effect
 
 ## Usage
 1. Copy any gesture SVG from https://nicegestures.gingersoul.co

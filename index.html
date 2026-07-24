@@ -494,33 +494,22 @@
   </footer>
 
   <!-- SVG Templates -->
-  <template id="tpl-drag-down">
+  <template id="tpl-touch-drag-down">
     <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
       <style>
-        .nges-drag-down-touch { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
-        .nges-drag-down-touch path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
-        .nges-drag-down-touch .nges-el { transform-origin: 108px 80px; }
-        .nges-drag-down-touch .nges-touch {
+        .nges-touch-drag-down { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
+        .nges-touch-drag-down path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
+        .nges-touch-drag-down .nges-el { transform-origin: 120px 120px; }
+        .nges-touch-drag-down .nges-indicator {
           fill: var(--_s);
           opacity: 0;
-          transform-origin: 108px 50px;
-        }
-        .nges-drag-down-touch .nges-arrow path {
-          stroke: var(--_s);
-          stroke-width: 1.5;
-          stroke-linecap: round;
-          stroke-linejoin: round;
-          fill: none;
-        }
-        .nges-drag-down-touch .nges-arrow {
-          opacity: 0;
+          transform-origin: 108px 53px;
         }
         @media (prefers-reduced-motion: no-preference) {
-          .nges-drag-down-touch .nges-el { animation: nges-drag-down-touch-hand var(--_d) ease-in-out infinite; }
-          .nges-drag-down-touch .nges-touch { animation: nges-drag-down-touch-circle var(--_d) ease-in-out infinite; }
-          .nges-drag-down-touch .nges-arrow { animation: nges-drag-down-touch-arrow var(--_d) ease-in-out infinite; }
+          .nges-touch-drag-down .nges-el { animation: nges-touch-drag-down-el var(--_d) ease-in-out infinite; }
+          .nges-touch-drag-down .nges-indicator { animation: nges-touch-drag-down-ind var(--_d) ease-in-out infinite; }
         }
-        @keyframes nges-drag-down-touch-hand {
+        @keyframes nges-touch-drag-down-el {
           0%, 5% { transform: translateY(0) scale(1); }
           15% { transform: translateY(-30px) scale(1); }
           20% { transform: translateY(-30px) scale(0.92); }
@@ -528,30 +517,16 @@
           65% { transform: translateY(40px) scale(1); }
           80%, 100% { transform: translateY(0) scale(1); }
         }
-        @keyframes nges-drag-down-touch-circle {
+        @keyframes nges-touch-drag-down-ind {
           0%, 10% { transform: translateY(0) scale(0); opacity: 0; }
           20% { transform: translateY(0) scale(1); opacity: 0.35; }
           55% { transform: translateY(70px) scale(1); opacity: 0.35; }
           65% { transform: translateY(70px) scale(1); opacity: 0; }
           100% { transform: translateY(0) scale(0); opacity: 0; }
         }
-        @keyframes nges-drag-down-touch-arrow {
-          0%, 10% { transform: translateY(0); opacity: 0; }
-          20% { transform: translateY(0); opacity: 0.6; }
-          55% { transform: translateY(30px); opacity: 0.6; }
-          65% { transform: translateY(30px); opacity: 0; }
-          100% { transform: translateY(0); opacity: 0; }
-        }
       </style>
-      <g class="nges-drag-down-touch">
-        <circle class="nges-touch" cx="108" cy="50" r="12" />
-        <g transform="translate(190, 91) scale(3) translate(-12, -12)">
-          <g class="nges-arrow">
-            <path d="M12 5v14" />
-            <path d="M16 15l-4 4" />
-            <path d="M8 15l4 4" />
-          </g>
-        </g>
+      <g class="nges-touch-drag-down">
+        <circle class="nges-indicator" cx="108" cy="53" r="20" />
         <g class="nges-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
           <path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5" /><path d="M11 11.5v-2a1.5 1.5 0 1 1 3 0v2.5" /><path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5" /><path d="M17 11.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47" />
         </g></g>
@@ -559,33 +534,22 @@
     </svg>
   </template>
 
-  <template id="tpl-drag-up">
+  <template id="tpl-touch-drag-up">
     <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
       <style>
-        .nges-drag-up-touch { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
-        .nges-drag-up-touch path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
-        .nges-drag-up-touch .nges-el { transform-origin: 108px 80px; }
-        .nges-drag-up-touch .nges-touch {
+        .nges-touch-drag-up { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
+        .nges-touch-drag-up path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
+        .nges-touch-drag-up .nges-el { transform-origin: 120px 120px; }
+        .nges-touch-drag-up .nges-indicator {
           fill: var(--_s);
           opacity: 0;
-          transform-origin: 108px 110px;
-        }
-        .nges-drag-up-touch .nges-arrow path {
-          stroke: var(--_s);
-          stroke-width: 1.5;
-          stroke-linecap: round;
-          stroke-linejoin: round;
-          fill: none;
-        }
-        .nges-drag-up-touch .nges-arrow {
-          opacity: 0;
+          transform-origin: 108px 113px;
         }
         @media (prefers-reduced-motion: no-preference) {
-          .nges-drag-up-touch .nges-el { animation: nges-drag-up-touch-hand var(--_d) ease-in-out infinite; }
-          .nges-drag-up-touch .nges-touch { animation: nges-drag-up-touch-circle var(--_d) ease-in-out infinite; }
-          .nges-drag-up-touch .nges-arrow { animation: nges-drag-up-touch-arrow var(--_d) ease-in-out infinite; }
+          .nges-touch-drag-up .nges-el { animation: nges-touch-drag-up-el var(--_d) ease-in-out infinite; }
+          .nges-touch-drag-up .nges-indicator { animation: nges-touch-drag-up-ind var(--_d) ease-in-out infinite; }
         }
-        @keyframes nges-drag-up-touch-hand {
+        @keyframes nges-touch-drag-up-el {
           0%, 5% { transform: translateY(0) scale(1); }
           15% { transform: translateY(30px) scale(1); }
           20% { transform: translateY(30px) scale(0.92); }
@@ -593,30 +557,16 @@
           65% { transform: translateY(-40px) scale(1); }
           80%, 100% { transform: translateY(0) scale(1); }
         }
-        @keyframes nges-drag-up-touch-circle {
+        @keyframes nges-touch-drag-up-ind {
           0%, 10% { transform: translateY(0) scale(0); opacity: 0; }
           20% { transform: translateY(0) scale(1); opacity: 0.35; }
           55% { transform: translateY(-70px) scale(1); opacity: 0.35; }
           65% { transform: translateY(-70px) scale(1); opacity: 0; }
           100% { transform: translateY(0) scale(0); opacity: 0; }
         }
-        @keyframes nges-drag-up-touch-arrow {
-          0%, 10% { transform: translateY(0); opacity: 0; }
-          20% { transform: translateY(0); opacity: 0.6; }
-          55% { transform: translateY(-30px); opacity: 0.6; }
-          65% { transform: translateY(-30px); opacity: 0; }
-          100% { transform: translateY(0); opacity: 0; }
-        }
       </style>
-      <g class="nges-drag-up-touch">
-        <circle class="nges-touch" cx="108" cy="110" r="12" />
-        <g transform="translate(190, 151) scale(3) translate(-12, -12)">
-          <g class="nges-arrow">
-            <path d="M12 5v14" />
-            <path d="M16 9l-4 -4" />
-            <path d="M8 9l4 -4" />
-          </g>
-        </g>
+      <g class="nges-touch-drag-up">
+        <circle class="nges-indicator" cx="108" cy="113" r="20" />
         <g class="nges-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
           <path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5" /><path d="M11 11.5v-2a1.5 1.5 0 1 1 3 0v2.5" /><path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5" /><path d="M17 11.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47" />
         </g></g>
@@ -629,21 +579,38 @@
       <style>
         .nges-pointer-drag-down { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
         .nges-pointer-drag-down path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
-        .nges-pointer-drag-down .nges-el { transform: translateY(25px); opacity: 0.8; }
-        @media (prefers-reduced-motion: no-preference) {
-          .nges-pointer-drag-down .nges-el { animation: nges-pointer-drag-down var(--_d) ease-in-out infinite; }
+        .nges-pointer-drag-down .nges-el { transform-origin: 120px 120px; }
+        .nges-pointer-drag-down .nges-indicator {
+          fill: var(--_s);
+          opacity: 0;
+          transform-origin: 80px 50px;
         }
-        @keyframes nges-pointer-drag-down {
-          0% { transform: translateY(0); opacity: 0; }
-          15% { transform: translateY(0); opacity: 1; }
-          60% { transform: translateY(50px); opacity: 1; }
-          80% { transform: translateY(50px); opacity: 0; }
-          100% { transform: translateY(0); opacity: 0; }
+        @media (prefers-reduced-motion: no-preference) {
+          .nges-pointer-drag-down .nges-el { animation: nges-pointer-drag-down-el var(--_d) ease-in-out infinite; }
+          .nges-pointer-drag-down .nges-indicator { animation: nges-pointer-drag-down-ind var(--_d) ease-in-out infinite; }
+        }
+        @keyframes nges-pointer-drag-down-el {
+          0%, 5% { transform: translateY(0) scale(1); }
+          15% { transform: translateY(-30px) scale(1); }
+          20% { transform: translateY(-30px) scale(0.92); }
+          55% { transform: translateY(40px) scale(0.92); }
+          65% { transform: translateY(40px) scale(1); }
+          80%, 100% { transform: translateY(0) scale(1); }
+        }
+        @keyframes nges-pointer-drag-down-ind {
+          0%, 10% { transform: translateY(0) scale(0); opacity: 0; }
+          20% { transform: translateY(0) scale(1); opacity: 0.35; }
+          55% { transform: translateY(70px) scale(1); opacity: 0.35; }
+          65% { transform: translateY(70px) scale(1); opacity: 0; }
+          100% { transform: translateY(0) scale(0); opacity: 0; }
         }
       </style>
-      <g class="nges-pointer-drag-down"><g class="nges-el"><g transform="translate(120, 70) scale(5) translate(-12, -12)">
-        <path d="M7.904 17.563a1.2 1.2 0 0 0 2.228 .308l2.09 -3.093l4.907 4.907a1.067 1.067 0 0 0 1.509 0l1.047 -1.047a1.067 1.067 0 0 0 0 -1.509l-4.907 -4.907l3.113 -2.09a1.2 1.2 0 0 0 -.309 -2.228l-13.582 -3.904l3.904 13.563" />
-      </g></g></g>
+      <g class="nges-pointer-drag-down">
+        <circle class="nges-indicator" cx="80" cy="50" r="20" />
+        <g class="nges-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
+          <path d="M7.904 17.563a1.2 1.2 0 0 0 2.228 .308l2.09 -3.093l4.907 4.907a1.067 1.067 0 0 0 1.509 0l1.047 -1.047a1.067 1.067 0 0 0 0 -1.509l-4.907 -4.907l3.113 -2.09a1.2 1.2 0 0 0 -.309 -2.228l-13.582 -3.904l3.904 13.563" />
+        </g></g>
+      </g>
     </svg>
   </template>
 
@@ -652,51 +619,228 @@
       <style>
         .nges-pointer-drag-up { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
         .nges-pointer-drag-up path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
-        .nges-pointer-drag-up .nges-el { transform: translateY(-25px); opacity: 0.8; }
-        @media (prefers-reduced-motion: no-preference) {
-          .nges-pointer-drag-up .nges-el { animation: nges-pointer-drag-up var(--_d) ease-in-out infinite; }
+        .nges-pointer-drag-up .nges-el { transform-origin: 120px 120px; }
+        .nges-pointer-drag-up .nges-indicator {
+          fill: var(--_s);
+          opacity: 0;
+          transform-origin: 80px 110px;
         }
-        @keyframes nges-pointer-drag-up {
-          0% { transform: translateY(0); opacity: 0; }
-          15% { transform: translateY(0); opacity: 1; }
-          60% { transform: translateY(-50px); opacity: 1; }
-          80% { transform: translateY(-50px); opacity: 0; }
-          100% { transform: translateY(0); opacity: 0; }
+        @media (prefers-reduced-motion: no-preference) {
+          .nges-pointer-drag-up .nges-el { animation: nges-pointer-drag-up-el var(--_d) ease-in-out infinite; }
+          .nges-pointer-drag-up .nges-indicator { animation: nges-pointer-drag-up-ind var(--_d) ease-in-out infinite; }
+        }
+        @keyframes nges-pointer-drag-up-el {
+          0%, 5% { transform: translateY(0) scale(1); }
+          15% { transform: translateY(30px) scale(1); }
+          20% { transform: translateY(30px) scale(0.92); }
+          55% { transform: translateY(-40px) scale(0.92); }
+          65% { transform: translateY(-40px) scale(1); }
+          80%, 100% { transform: translateY(0) scale(1); }
+        }
+        @keyframes nges-pointer-drag-up-ind {
+          0%, 10% { transform: translateY(0) scale(0); opacity: 0; }
+          20% { transform: translateY(0) scale(1); opacity: 0.35; }
+          55% { transform: translateY(-70px) scale(1); opacity: 0.35; }
+          65% { transform: translateY(-70px) scale(1); opacity: 0; }
+          100% { transform: translateY(0) scale(0); opacity: 0; }
         }
       </style>
-      <g class="nges-pointer-drag-up"><g class="nges-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
-        <path d="M7.904 17.563a1.2 1.2 0 0 0 2.228 .308l2.09 -3.093l4.907 4.907a1.067 1.067 0 0 0 1.509 0l1.047 -1.047a1.067 1.067 0 0 0 0 -1.509l-4.907 -4.907l3.113 -2.09a1.2 1.2 0 0 0 -.309 -2.228l-13.582 -3.904l3.904 13.563" />
-      </g></g></g>
+      <g class="nges-pointer-drag-up">
+        <circle class="nges-indicator" cx="80" cy="110" r="20" />
+        <g class="nges-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
+          <path d="M7.904 17.563a1.2 1.2 0 0 0 2.228 .308l2.09 -3.093l4.907 4.907a1.067 1.067 0 0 0 1.509 0l1.047 -1.047a1.067 1.067 0 0 0 0 -1.509l-4.907 -4.907l3.113 -2.09a1.2 1.2 0 0 0 -.309 -2.228l-13.582 -3.904l3.904 13.563" />
+        </g></g>
+      </g>
     </svg>
   </template>
 
-  <template id="tpl-tap">
+  <template id="tpl-touch-drag-left">
     <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
       <style>
-        .nges-tap { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
-        .nges-tap path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
-        .nges-tap .nges-el { transform-origin: 120px 90px; }
-        .nges-tap .nges-ripple { fill: var(--_s); stroke: none; opacity: 0; transform-origin: 120px 90px; }
-        @media (prefers-reduced-motion: no-preference) {
-          .nges-tap .nges-el { animation: nges-tap-hand var(--_d) ease-in-out infinite; }
-          .nges-tap .nges-ripple { animation: nges-tap-ripple var(--_d) ease-out infinite; }
+        .nges-touch-drag-left { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
+        .nges-touch-drag-left path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
+        .nges-touch-drag-left .nges-el { transform-origin: 120px 120px; }
+        .nges-touch-drag-left .nges-indicator {
+          fill: var(--_s);
+          opacity: 0;
+          transform-origin: 138px 83px;
         }
-        @keyframes nges-tap-hand {
+        @media (prefers-reduced-motion: no-preference) {
+          .nges-touch-drag-left .nges-el { animation: nges-touch-drag-left-el var(--_d) ease-in-out infinite; }
+          .nges-touch-drag-left .nges-indicator { animation: nges-touch-drag-left-ind var(--_d) ease-in-out infinite; }
+        }
+        @keyframes nges-touch-drag-left-el {
+          0%, 5% { transform: translateX(0) scale(1); }
+          15% { transform: translateX(30px) scale(1); }
+          20% { transform: translateX(30px) scale(0.92); }
+          55% { transform: translateX(-40px) scale(0.92); }
+          65% { transform: translateX(-40px) scale(1); }
+          80%, 100% { transform: translateX(0) scale(1); }
+        }
+        @keyframes nges-touch-drag-left-ind {
+          0%, 10% { transform: translateX(0) scale(0); opacity: 0; }
+          20% { transform: translateX(0) scale(1); opacity: 0.35; }
+          55% { transform: translateX(-70px) scale(1); opacity: 0.35; }
+          65% { transform: translateX(-70px) scale(1); opacity: 0; }
+          100% { transform: translateX(0) scale(0); opacity: 0; }
+        }
+      </style>
+      <g class="nges-touch-drag-left">
+        <circle class="nges-indicator" cx="138" cy="83" r="20" />
+        <g class="nges-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
+          <path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5" /><path d="M11 11.5v-2a1.5 1.5 0 1 1 3 0v2.5" /><path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5" /><path d="M17 11.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47" />
+        </g></g>
+      </g>
+    </svg>
+  </template>
+
+  <template id="tpl-touch-drag-right">
+    <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+      <style>
+        .nges-touch-drag-right { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
+        .nges-touch-drag-right path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
+        .nges-touch-drag-right .nges-el { transform-origin: 120px 120px; }
+        .nges-touch-drag-right .nges-indicator {
+          fill: var(--_s);
+          opacity: 0;
+          transform-origin: 78px 83px;
+        }
+        @media (prefers-reduced-motion: no-preference) {
+          .nges-touch-drag-right .nges-el { animation: nges-touch-drag-right-el var(--_d) ease-in-out infinite; }
+          .nges-touch-drag-right .nges-indicator { animation: nges-touch-drag-right-ind var(--_d) ease-in-out infinite; }
+        }
+        @keyframes nges-touch-drag-right-el {
+          0%, 5% { transform: translateX(0) scale(1); }
+          15% { transform: translateX(-30px) scale(1); }
+          20% { transform: translateX(-30px) scale(0.92); }
+          55% { transform: translateX(40px) scale(0.92); }
+          65% { transform: translateX(40px) scale(1); }
+          80%, 100% { transform: translateX(0) scale(1); }
+        }
+        @keyframes nges-touch-drag-right-ind {
+          0%, 10% { transform: translateX(0) scale(0); opacity: 0; }
+          20% { transform: translateX(0) scale(1); opacity: 0.35; }
+          55% { transform: translateX(70px) scale(1); opacity: 0.35; }
+          65% { transform: translateX(70px) scale(1); opacity: 0; }
+          100% { transform: translateX(0) scale(0); opacity: 0; }
+        }
+      </style>
+      <g class="nges-touch-drag-right">
+        <circle class="nges-indicator" cx="78" cy="83" r="20" />
+        <g class="nges-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
+          <path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5" /><path d="M11 11.5v-2a1.5 1.5 0 1 1 3 0v2.5" /><path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5" /><path d="M17 11.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47" />
+        </g></g>
+      </g>
+    </svg>
+  </template>
+
+  <template id="tpl-pointer-drag-left">
+    <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+      <style>
+        .nges-pointer-drag-left { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
+        .nges-pointer-drag-left path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
+        .nges-pointer-drag-left .nges-el { transform-origin: 120px 120px; }
+        .nges-pointer-drag-left .nges-indicator {
+          fill: var(--_s);
+          opacity: 0;
+          transform-origin: 110px 80px;
+        }
+        @media (prefers-reduced-motion: no-preference) {
+          .nges-pointer-drag-left .nges-el { animation: nges-pointer-drag-left-el var(--_d) ease-in-out infinite; }
+          .nges-pointer-drag-left .nges-indicator { animation: nges-pointer-drag-left-ind var(--_d) ease-in-out infinite; }
+        }
+        @keyframes nges-pointer-drag-left-el {
+          0%, 5% { transform: translateX(0) scale(1); }
+          15% { transform: translateX(30px) scale(1); }
+          20% { transform: translateX(30px) scale(0.92); }
+          55% { transform: translateX(-40px) scale(0.92); }
+          65% { transform: translateX(-40px) scale(1); }
+          80%, 100% { transform: translateX(0) scale(1); }
+        }
+        @keyframes nges-pointer-drag-left-ind {
+          0%, 10% { transform: translateX(0) scale(0); opacity: 0; }
+          20% { transform: translateX(0) scale(1); opacity: 0.35; }
+          55% { transform: translateX(-70px) scale(1); opacity: 0.35; }
+          65% { transform: translateX(-70px) scale(1); opacity: 0; }
+          100% { transform: translateX(0) scale(0); opacity: 0; }
+        }
+      </style>
+      <g class="nges-pointer-drag-left">
+        <circle class="nges-indicator" cx="110" cy="80" r="20" />
+        <g class="nges-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
+          <path d="M7.904 17.563a1.2 1.2 0 0 0 2.228 .308l2.09 -3.093l4.907 4.907a1.067 1.067 0 0 0 1.509 0l1.047 -1.047a1.067 1.067 0 0 0 0 -1.509l-4.907 -4.907l3.113 -2.09a1.2 1.2 0 0 0 -.309 -2.228l-13.582 -3.904l3.904 13.563" />
+        </g></g>
+      </g>
+    </svg>
+  </template>
+
+  <template id="tpl-pointer-drag-right">
+    <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+      <style>
+        .nges-pointer-drag-right { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
+        .nges-pointer-drag-right path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
+        .nges-pointer-drag-right .nges-el { transform-origin: 120px 120px; }
+        .nges-pointer-drag-right .nges-indicator {
+          fill: var(--_s);
+          opacity: 0;
+          transform-origin: 50px 80px;
+        }
+        @media (prefers-reduced-motion: no-preference) {
+          .nges-pointer-drag-right .nges-el { animation: nges-pointer-drag-right-el var(--_d) ease-in-out infinite; }
+          .nges-pointer-drag-right .nges-indicator { animation: nges-pointer-drag-right-ind var(--_d) ease-in-out infinite; }
+        }
+        @keyframes nges-pointer-drag-right-el {
+          0%, 5% { transform: translateX(0) scale(1); }
+          15% { transform: translateX(-30px) scale(1); }
+          20% { transform: translateX(-30px) scale(0.92); }
+          55% { transform: translateX(40px) scale(0.92); }
+          65% { transform: translateX(40px) scale(1); }
+          80%, 100% { transform: translateX(0) scale(1); }
+        }
+        @keyframes nges-pointer-drag-right-ind {
+          0%, 10% { transform: translateX(0) scale(0); opacity: 0; }
+          20% { transform: translateX(0) scale(1); opacity: 0.35; }
+          55% { transform: translateX(70px) scale(1); opacity: 0.35; }
+          65% { transform: translateX(70px) scale(1); opacity: 0; }
+          100% { transform: translateX(0) scale(0); opacity: 0; }
+        }
+      </style>
+      <g class="nges-pointer-drag-right">
+        <circle class="nges-indicator" cx="50" cy="80" r="20" />
+        <g class="nges-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
+          <path d="M7.904 17.563a1.2 1.2 0 0 0 2.228 .308l2.09 -3.093l4.907 4.907a1.067 1.067 0 0 0 1.509 0l1.047 -1.047a1.067 1.067 0 0 0 0 -1.509l-4.907 -4.907l3.113 -2.09a1.2 1.2 0 0 0 -.309 -2.228l-13.582 -3.904l3.904 13.563" />
+        </g></g>
+      </g>
+    </svg>
+  </template>
+
+  <template id="tpl-touch-tap">
+    <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+      <style>
+        .nges-touch-tap { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
+        .nges-touch-tap path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
+        .nges-touch-tap .nges-el { transform-origin: 120px 120px; }
+        .nges-touch-tap .nges-indicator { fill: var(--_s); opacity: 0; transform-origin: 108px 83px; }
+        @media (prefers-reduced-motion: no-preference) {
+          .nges-touch-tap .nges-el { animation: nges-touch-tap-el var(--_d) ease-in-out infinite; }
+          .nges-touch-tap .nges-indicator { animation: nges-touch-tap-ind var(--_d) ease-out infinite; }
+        }
+        @keyframes nges-touch-tap-el {
           0%, 3% { transform: scale(1); }
           12% { transform: scale(0.92); }
           25%, 100% { transform: scale(1); }
         }
-        @keyframes nges-tap-ripple {
-          0%, 11% { transform: scale(0); opacity: 0; }
-          12% { transform: scale(0); opacity: 0.35; }
-          22% { transform: scale(0.4); opacity: 0.25; }
-          42% { transform: scale(1); opacity: 0; }
+        @keyframes nges-touch-tap-ind {
+          0%, 11% { transform: scale(0.5); opacity: 0; }
+          12% { transform: scale(0.5); opacity: 0.35; }
+          25% { transform: scale(1); opacity: 0.2; }
+          35% { transform: scale(1); opacity: 0; }
           100% { transform: scale(1); opacity: 0; }
         }
       </style>
-      <g class="nges-tap">
-        <circle class="nges-ripple" cx="120" cy="90" r="30" />
-        <g class="nges-el"><g transform="translate(120, 90) scale(5) translate(-9.5, -3)">
+      <g class="nges-touch-tap">
+        <circle class="nges-indicator" cx="108" cy="83" r="20" />
+        <g class="nges-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
           <path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5" />
           <path d="M11 11.5v-2a1.5 1.5 0 1 1 3 0v2.5" />
           <path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5" />
@@ -706,35 +850,33 @@
     </svg>
   </template>
 
-  <template id="tpl-click">
+  <template id="tpl-pointer-click">
     <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
       <style>
-        .nges-click { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
-        .nges-click path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
-        .nges-click .nges-el { opacity: 0.8; }
-        .nges-click .nges-ripple { stroke: var(--_s); stroke-width: 1.5; fill: none; opacity: 0; }
+        .nges-pointer-click { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
+        .nges-pointer-click path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
+        .nges-pointer-click .nges-el { transform-origin: 120px 120px; }
+        .nges-pointer-click .nges-indicator { fill: var(--_s); opacity: 0; transform-origin: 80px 80px; }
         @media (prefers-reduced-motion: no-preference) {
-          .nges-click .nges-el { animation: nges-click-cursor var(--_d) ease-in-out infinite; }
-          .nges-click .nges-ripple { animation: nges-click-ripple var(--_d) ease-out infinite; }
+          .nges-pointer-click .nges-el { animation: nges-pointer-click-el var(--_d) ease-in-out infinite; }
+          .nges-pointer-click .nges-indicator { animation: nges-pointer-click-ind var(--_d) ease-out infinite; }
         }
-        @keyframes nges-click-cursor {
-          0%, 15% { transform: scale(1); opacity: 0; }
-          25% { transform: scale(1); opacity: 1; }
-          35%, 45% { transform: scale(0.92); opacity: 1; }
-          55% { transform: scale(1); opacity: 1; }
-          70% { transform: scale(1); opacity: 0; }
-          100% { transform: scale(1); opacity: 0; }
+        @keyframes nges-pointer-click-el {
+          0%, 3% { transform: scale(1); }
+          12% { transform: scale(0.92); }
+          25%, 100% { transform: scale(1); }
         }
-        @keyframes nges-click-ripple {
-          0%, 34% { transform: scale(0); opacity: 0; }
-          38% { transform: scale(0.3); opacity: 0.6; }
-          55% { transform: scale(1); opacity: 0; }
+        @keyframes nges-pointer-click-ind {
+          0%, 11% { transform: scale(0.5); opacity: 0; }
+          12% { transform: scale(0.5); opacity: 0.35; }
+          25% { transform: scale(1); opacity: 0.2; }
+          35% { transform: scale(1); opacity: 0; }
           100% { transform: scale(1); opacity: 0; }
         }
       </style>
-      <g class="nges-click">
-        <circle class="nges-ripple" cx="95" cy="85" r="25" style="transform-origin: 95px 85px" />
-        <g class="nges-el"><g transform="translate(120, 95) scale(5) translate(-12, -12)">
+      <g class="nges-pointer-click">
+        <circle class="nges-indicator" cx="80" cy="80" r="20" />
+        <g class="nges-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
           <path d="M7.904 17.563a1.2 1.2 0 0 0 2.228 .308l2.09 -3.093l4.907 4.907a1.067 1.067 0 0 0 1.509 0l1.047 -1.047a1.067 1.067 0 0 0 0 -1.509l-4.907 -4.907l3.113 -2.09a1.2 1.2 0 0 0 -.309 -2.228l-13.582 -3.904l3.904 13.563" />
         </g></g>
       </g>
@@ -765,12 +907,16 @@
     };
 
     const gestures = [
-      { id: 'click', name: 'click', template: 'tpl-click' },
-      { id: 'drag-down', name: 'drag-down', template: 'tpl-drag-down' },
-      { id: 'drag-up', name: 'drag-up', template: 'tpl-drag-up' },
+      { id: 'pointer-click', name: 'pointer-click', template: 'tpl-pointer-click' },
       { id: 'pointer-drag-down', name: 'pointer-drag-down', template: 'tpl-pointer-drag-down' },
       { id: 'pointer-drag-up', name: 'pointer-drag-up', template: 'tpl-pointer-drag-up' },
-      { id: 'tap', name: 'tap', template: 'tpl-tap' },
+      { id: 'pointer-drag-left', name: 'pointer-drag-left', template: 'tpl-pointer-drag-left' },
+      { id: 'pointer-drag-right', name: 'pointer-drag-right', template: 'tpl-pointer-drag-right' },
+      { id: 'touch-tap', name: 'touch-tap', template: 'tpl-touch-tap' },
+      { id: 'touch-drag-down', name: 'touch-drag-down', template: 'tpl-touch-drag-down' },
+      { id: 'touch-drag-up', name: 'touch-drag-up', template: 'tpl-touch-drag-up' },
+      { id: 'touch-drag-left', name: 'touch-drag-left', template: 'tpl-touch-drag-left' },
+      { id: 'touch-drag-right', name: 'touch-drag-right', template: 'tpl-touch-drag-right' },
     ];
 
     function renderGestures() {
@@ -805,7 +951,7 @@
             if (!autoplay) {
               const svg = preview.querySelector('svg');
               if (svg) {
-                svg.querySelectorAll('.nges-el, .nges-ripple, .nges-touch, .nges-arrow, .nges-f1, .nges-f2').forEach(el => {
+                svg.querySelectorAll('.nges-el, .nges-indicator').forEach(el => {
                   el.style.animationPlayState = 'running';
                 });
               }
@@ -815,7 +961,7 @@
             if (!autoplay) {
               const svg = preview.querySelector('svg');
               if (svg) {
-                svg.querySelectorAll('.nges-el, .nges-ripple, .nges-touch, .nges-arrow, .nges-f1, .nges-f2').forEach(el => {
+                svg.querySelectorAll('.nges-el, .nges-indicator').forEach(el => {
                   el.style.animationPlayState = 'paused';
                 });
               }
@@ -837,7 +983,7 @@
       const duration = getGestureDuration(gestureId);
       const seekTime = (seekPercent / 100) * duration;
 
-      svg.querySelectorAll('.nges-el, .nges-ripple, .nges-touch, .nges-arrow, .nges-f1, .nges-f2').forEach(el => {
+      svg.querySelectorAll('.nges-el, .nges-indicator').forEach(el => {
         el.style.animationDelay = `-${seekTime}s`;
         if (!playing) {
           el.style.animationPlayState = 'paused';
@@ -1037,13 +1183,13 @@
 Nice Gestures is a collection of copy-paste SVG gesture animations. No JavaScript or Lottie files required - pure CSS animations embedded in SVG.
 
 ## Available Gestures
-Touch gestures (hand icon):
-- drag-down, drag-up (touch drag with directional arrow)
-- tap (finger tap with ripple)
-
 Pointer gestures (cursor icon):
+- pointer-click (mouse click with ripple)
 - pointer-drag-down, pointer-drag-up (mouse drag)
-- click (mouse click with ripple)
+
+Touch gestures (hand icon):
+- touch-drag-down, touch-drag-up (touch drag)
+- touch-tap (finger tap with ripple)
 
 ## Usage
 1. Copy any gesture SVG from https://nicegestures.gingersoul.co
@@ -1079,14 +1225,14 @@ https://github.com/gingersoulrecords/nicegestures`;
       const output = document.getElementById('debugOutput');
       output.value = 'Running diagnostic...\n';
 
-      const card = document.querySelector('[data-gesture="drag-down"]');
+      const card = document.querySelector('[data-gesture="touch-drag-down"]');
       if (!card) {
         output.value = 'drag-down gesture not found';
         return;
       }
 
       const preview = card.querySelector('.gesture-preview');
-      const duration = getGestureDuration('drag-down');
+      const duration = getGestureDuration('touch-drag-down');
       const checkPoints = [0, 10, 15, 20, 40, 55, 65, 80, 100];
 
       let report = `DRAG-DOWN ANIMATION\nDuration: ${duration}s\n\n`;
