@@ -439,7 +439,7 @@
   <!-- Debug Panel (hidden unless ?debug=1 or localhost) -->
   <div class="debug-panel">
     <h3>Animation Diagnostic</h3>
-    <textarea id="debugOutput" placeholder="Click 'Run Diagnostic' to analyze swipe-down animation..."></textarea>
+    <textarea id="debugOutput" placeholder="Click 'Run Diagnostic' to analyze drag-down animation..."></textarea>
     <div class="pills">
       <button id="runDiagBtn">Run Diagnostic</button>
       <button id="copyDiagBtn">Copy Results</button>
@@ -494,33 +494,33 @@
   </footer>
 
   <!-- SVG Templates -->
-  <template id="tpl-swipe-down">
+  <template id="tpl-drag-down">
     <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
       <style>
-        .nges-swipe-down { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
-        .nges-swipe-down path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
-        .nges-swipe-down .nges-el { transform-origin: 108px 80px; }
-        .nges-swipe-down .nges-touch {
+        .nges-drag-down-touch { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
+        .nges-drag-down-touch path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
+        .nges-drag-down-touch .nges-el { transform-origin: 108px 80px; }
+        .nges-drag-down-touch .nges-touch {
           fill: var(--_s);
           opacity: 0;
           transform-origin: 108px 50px;
         }
-        .nges-swipe-down .nges-arrow path {
+        .nges-drag-down-touch .nges-arrow path {
           stroke: var(--_s);
           stroke-width: 1.5;
           stroke-linecap: round;
           stroke-linejoin: round;
           fill: none;
         }
-        .nges-swipe-down .nges-arrow {
+        .nges-drag-down-touch .nges-arrow {
           opacity: 0;
         }
         @media (prefers-reduced-motion: no-preference) {
-          .nges-swipe-down .nges-el { animation: nges-swipe-down-hand var(--_d) ease-in-out infinite; }
-          .nges-swipe-down .nges-touch { animation: nges-swipe-down-touch var(--_d) ease-in-out infinite; }
-          .nges-swipe-down .nges-arrow { animation: nges-swipe-down-arrow var(--_d) ease-in-out infinite; }
+          .nges-drag-down-touch .nges-el { animation: nges-drag-down-touch-hand var(--_d) ease-in-out infinite; }
+          .nges-drag-down-touch .nges-touch { animation: nges-drag-down-touch-circle var(--_d) ease-in-out infinite; }
+          .nges-drag-down-touch .nges-arrow { animation: nges-drag-down-touch-arrow var(--_d) ease-in-out infinite; }
         }
-        @keyframes nges-swipe-down-hand {
+        @keyframes nges-drag-down-touch-hand {
           0%, 5% { transform: translateY(0) scale(1); }
           15% { transform: translateY(-30px) scale(1); }
           20% { transform: translateY(-30px) scale(0.92); }
@@ -528,14 +528,14 @@
           65% { transform: translateY(40px) scale(1); }
           80%, 100% { transform: translateY(0) scale(1); }
         }
-        @keyframes nges-swipe-down-touch {
+        @keyframes nges-drag-down-touch-circle {
           0%, 10% { transform: translateY(0) scale(0); opacity: 0; }
           20% { transform: translateY(0) scale(1); opacity: 0.35; }
           55% { transform: translateY(70px) scale(1); opacity: 0.35; }
           65% { transform: translateY(70px) scale(1); opacity: 0; }
           100% { transform: translateY(0) scale(0); opacity: 0; }
         }
-        @keyframes nges-swipe-down-arrow {
+        @keyframes nges-drag-down-touch-arrow {
           0%, 10% { transform: translateY(0); opacity: 0; }
           20% { transform: translateY(0); opacity: 0.6; }
           55% { transform: translateY(30px); opacity: 0.6; }
@@ -543,7 +543,7 @@
           100% { transform: translateY(0); opacity: 0; }
         }
       </style>
-      <g class="nges-swipe-down">
+      <g class="nges-drag-down-touch">
         <circle class="nges-touch" cx="108" cy="50" r="12" />
         <g transform="translate(190, 91) scale(3) translate(-12, -12)">
           <g class="nges-arrow">
@@ -559,33 +559,33 @@
     </svg>
   </template>
 
-  <template id="tpl-swipe-up">
+  <template id="tpl-drag-up">
     <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
       <style>
-        .nges-swipe-up { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
-        .nges-swipe-up path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
-        .nges-swipe-up .nges-el { transform-origin: 108px 80px; }
-        .nges-swipe-up .nges-touch {
+        .nges-drag-up-touch { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
+        .nges-drag-up-touch path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
+        .nges-drag-up-touch .nges-el { transform-origin: 108px 80px; }
+        .nges-drag-up-touch .nges-touch {
           fill: var(--_s);
           opacity: 0;
           transform-origin: 108px 110px;
         }
-        .nges-swipe-up .nges-arrow path {
+        .nges-drag-up-touch .nges-arrow path {
           stroke: var(--_s);
           stroke-width: 1.5;
           stroke-linecap: round;
           stroke-linejoin: round;
           fill: none;
         }
-        .nges-swipe-up .nges-arrow {
+        .nges-drag-up-touch .nges-arrow {
           opacity: 0;
         }
         @media (prefers-reduced-motion: no-preference) {
-          .nges-swipe-up .nges-el { animation: nges-swipe-up-hand var(--_d) ease-in-out infinite; }
-          .nges-swipe-up .nges-touch { animation: nges-swipe-up-touch var(--_d) ease-in-out infinite; }
-          .nges-swipe-up .nges-arrow { animation: nges-swipe-up-arrow var(--_d) ease-in-out infinite; }
+          .nges-drag-up-touch .nges-el { animation: nges-drag-up-touch-hand var(--_d) ease-in-out infinite; }
+          .nges-drag-up-touch .nges-touch { animation: nges-drag-up-touch-circle var(--_d) ease-in-out infinite; }
+          .nges-drag-up-touch .nges-arrow { animation: nges-drag-up-touch-arrow var(--_d) ease-in-out infinite; }
         }
-        @keyframes nges-swipe-up-hand {
+        @keyframes nges-drag-up-touch-hand {
           0%, 5% { transform: translateY(0) scale(1); }
           15% { transform: translateY(30px) scale(1); }
           20% { transform: translateY(30px) scale(0.92); }
@@ -593,14 +593,14 @@
           65% { transform: translateY(-40px) scale(1); }
           80%, 100% { transform: translateY(0) scale(1); }
         }
-        @keyframes nges-swipe-up-touch {
+        @keyframes nges-drag-up-touch-circle {
           0%, 10% { transform: translateY(0) scale(0); opacity: 0; }
           20% { transform: translateY(0) scale(1); opacity: 0.35; }
           55% { transform: translateY(-70px) scale(1); opacity: 0.35; }
           65% { transform: translateY(-70px) scale(1); opacity: 0; }
           100% { transform: translateY(0) scale(0); opacity: 0; }
         }
-        @keyframes nges-swipe-up-arrow {
+        @keyframes nges-drag-up-touch-arrow {
           0%, 10% { transform: translateY(0); opacity: 0; }
           20% { transform: translateY(0); opacity: 0.6; }
           55% { transform: translateY(-30px); opacity: 0.6; }
@@ -608,7 +608,7 @@
           100% { transform: translateY(0); opacity: 0; }
         }
       </style>
-      <g class="nges-swipe-up">
+      <g class="nges-drag-up-touch">
         <circle class="nges-touch" cx="108" cy="110" r="12" />
         <g transform="translate(190, 151) scale(3) translate(-12, -12)">
           <g class="nges-arrow">
@@ -624,16 +624,16 @@
     </svg>
   </template>
 
-  <template id="tpl-drag-down">
+  <template id="tpl-pointer-drag-down">
     <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
       <style>
-        .nges-drag-down { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
-        .nges-drag-down path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
-        .nges-drag-down .nges-el { transform: translateY(25px); opacity: 0.8; }
+        .nges-pointer-drag-down { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
+        .nges-pointer-drag-down path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
+        .nges-pointer-drag-down .nges-el { transform: translateY(25px); opacity: 0.8; }
         @media (prefers-reduced-motion: no-preference) {
-          .nges-drag-down .nges-el { animation: nges-drag-down var(--_d) ease-in-out infinite; }
+          .nges-pointer-drag-down .nges-el { animation: nges-pointer-drag-down var(--_d) ease-in-out infinite; }
         }
-        @keyframes nges-drag-down {
+        @keyframes nges-pointer-drag-down {
           0% { transform: translateY(0); opacity: 0; }
           15% { transform: translateY(0); opacity: 1; }
           60% { transform: translateY(50px); opacity: 1; }
@@ -641,22 +641,22 @@
           100% { transform: translateY(0); opacity: 0; }
         }
       </style>
-      <g class="nges-drag-down"><g class="nges-el"><g transform="translate(120, 70) scale(5) translate(-12, -12)">
+      <g class="nges-pointer-drag-down"><g class="nges-el"><g transform="translate(120, 70) scale(5) translate(-12, -12)">
         <path d="M7.904 17.563a1.2 1.2 0 0 0 2.228 .308l2.09 -3.093l4.907 4.907a1.067 1.067 0 0 0 1.509 0l1.047 -1.047a1.067 1.067 0 0 0 0 -1.509l-4.907 -4.907l3.113 -2.09a1.2 1.2 0 0 0 -.309 -2.228l-13.582 -3.904l3.904 13.563" />
       </g></g></g>
     </svg>
   </template>
 
-  <template id="tpl-drag-up">
+  <template id="tpl-pointer-drag-up">
     <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
       <style>
-        .nges-drag-up { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
-        .nges-drag-up path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
-        .nges-drag-up .nges-el { transform: translateY(-25px); opacity: 0.8; }
+        .nges-pointer-drag-up { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
+        .nges-pointer-drag-up path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
+        .nges-pointer-drag-up .nges-el { transform: translateY(-25px); opacity: 0.8; }
         @media (prefers-reduced-motion: no-preference) {
-          .nges-drag-up .nges-el { animation: nges-drag-up var(--_d) ease-in-out infinite; }
+          .nges-pointer-drag-up .nges-el { animation: nges-pointer-drag-up var(--_d) ease-in-out infinite; }
         }
-        @keyframes nges-drag-up {
+        @keyframes nges-pointer-drag-up {
           0% { transform: translateY(0); opacity: 0; }
           15% { transform: translateY(0); opacity: 1; }
           60% { transform: translateY(-50px); opacity: 1; }
@@ -664,7 +664,7 @@
           100% { transform: translateY(0); opacity: 0; }
         }
       </style>
-      <g class="nges-drag-up"><g class="nges-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
+      <g class="nges-pointer-drag-up"><g class="nges-el"><g transform="translate(120, 120) scale(5) translate(-12, -12)">
         <path d="M7.904 17.563a1.2 1.2 0 0 0 2.228 .308l2.09 -3.093l4.907 4.907a1.067 1.067 0 0 0 1.509 0l1.047 -1.047a1.067 1.067 0 0 0 0 -1.509l-4.907 -4.907l3.113 -2.09a1.2 1.2 0 0 0 -.309 -2.228l-13.582 -3.904l3.904 13.563" />
       </g></g></g>
     </svg>
@@ -741,80 +741,6 @@
     </svg>
   </template>
 
-  <template id="tpl-pinch-out">
-    <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
-      <style>
-        .nges-pinch-out { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
-        .nges-pinch-out path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
-        .nges-pinch-out .nges-f1 { opacity: 0.8; transform: translate(-10px, -10px); }
-        .nges-pinch-out .nges-f2 { opacity: 0.8; transform: translate(10px, 10px); }
-        @media (prefers-reduced-motion: no-preference) {
-          .nges-pinch-out .nges-f1 { animation: nges-pinch-out-f1 var(--_d) ease-in-out infinite; }
-          .nges-pinch-out .nges-f2 { animation: nges-pinch-out-f2 var(--_d) ease-in-out infinite; }
-        }
-        @keyframes nges-pinch-out-f1 {
-          0%, 10% { transform: translate(0, 0); opacity: 0; }
-          20% { transform: translate(0, 0); opacity: 1; }
-          60% { transform: translate(-25px, -25px); opacity: 1; }
-          80% { transform: translate(-25px, -25px); opacity: 0; }
-          100% { transform: translate(0, 0); opacity: 0; }
-        }
-        @keyframes nges-pinch-out-f2 {
-          0%, 10% { transform: translate(0, 0); opacity: 0; }
-          20% { transform: translate(0, 0); opacity: 1; }
-          60% { transform: translate(25px, 25px); opacity: 1; }
-          80% { transform: translate(25px, 25px); opacity: 0; }
-          100% { transform: translate(0, 0); opacity: 0; }
-        }
-      </style>
-      <g class="nges-pinch-out">
-        <g class="nges-f1"><g transform="translate(105, 105) scale(3.5) translate(-12, -12)">
-          <path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5" /><path d="M11 11.5v-2a1.5 1.5 0 1 1 3 0v2.5" /><path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5" /><path d="M17 11.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47" />
-        </g></g>
-        <g class="nges-f2"><g transform="translate(135, 135) scale(3.5) translate(-12, -12)">
-          <path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5" /><path d="M11 11.5v-2a1.5 1.5 0 1 1 3 0v2.5" /><path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5" /><path d="M17 11.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47" />
-        </g></g>
-      </g>
-    </svg>
-  </template>
-
-  <template id="tpl-pinch-in">
-    <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
-      <style>
-        .nges-pinch-in { --_d: var(--nges-duration, 2.4s); --_s: var(--nges-stroke, currentColor); --_f: var(--nges-fill, white); }
-        .nges-pinch-in path { stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; fill: var(--_f); }
-        .nges-pinch-in .nges-f1 { opacity: 0.8; transform: translate(10px, 10px); }
-        .nges-pinch-in .nges-f2 { opacity: 0.8; transform: translate(-10px, -10px); }
-        @media (prefers-reduced-motion: no-preference) {
-          .nges-pinch-in .nges-f1 { animation: nges-pinch-in-f1 var(--_d) ease-in-out infinite; }
-          .nges-pinch-in .nges-f2 { animation: nges-pinch-in-f2 var(--_d) ease-in-out infinite; }
-        }
-        @keyframes nges-pinch-in-f1 {
-          0%, 10% { transform: translate(-25px, -25px); opacity: 0; }
-          20% { transform: translate(-25px, -25px); opacity: 1; }
-          60% { transform: translate(10px, 10px); opacity: 1; }
-          80% { transform: translate(10px, 10px); opacity: 0; }
-          100% { transform: translate(-25px, -25px); opacity: 0; }
-        }
-        @keyframes nges-pinch-in-f2 {
-          0%, 10% { transform: translate(25px, 25px); opacity: 0; }
-          20% { transform: translate(25px, 25px); opacity: 1; }
-          60% { transform: translate(-10px, -10px); opacity: 1; }
-          80% { transform: translate(-10px, -10px); opacity: 0; }
-          100% { transform: translate(25px, 25px); opacity: 0; }
-        }
-      </style>
-      <g class="nges-pinch-in">
-        <g class="nges-f1"><g transform="translate(105, 105) scale(3.5) translate(-12, -12)">
-          <path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5" /><path d="M11 11.5v-2a1.5 1.5 0 1 1 3 0v2.5" /><path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5" /><path d="M17 11.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47" />
-        </g></g>
-        <g class="nges-f2"><g transform="translate(135, 135) scale(3.5) translate(-12, -12)">
-          <path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5" /><path d="M11 11.5v-2a1.5 1.5 0 1 1 3 0v2.5" /><path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5" /><path d="M17 11.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47" />
-        </g></g>
-      </g>
-    </svg>
-  </template>
-
   <script>
     // Debug mode: localhost or ?debug=1
     const isDebugMode = location.hostname === 'localhost' ||
@@ -839,14 +765,12 @@
     };
 
     const gestures = [
-      { id: 'swipe-down', name: 'swipe-down', template: 'tpl-swipe-down' },
-      { id: 'swipe-up', name: 'swipe-up', template: 'tpl-swipe-up' },
+      { id: 'click', name: 'click', template: 'tpl-click' },
       { id: 'drag-down', name: 'drag-down', template: 'tpl-drag-down' },
       { id: 'drag-up', name: 'drag-up', template: 'tpl-drag-up' },
+      { id: 'pointer-drag-down', name: 'pointer-drag-down', template: 'tpl-pointer-drag-down' },
+      { id: 'pointer-drag-up', name: 'pointer-drag-up', template: 'tpl-pointer-drag-up' },
       { id: 'tap', name: 'tap', template: 'tpl-tap' },
-      { id: 'click', name: 'click', template: 'tpl-click' },
-      { id: 'pinch-out', name: 'pinch-out', template: 'tpl-pinch-out' },
-      { id: 'pinch-in', name: 'pinch-in', template: 'tpl-pinch-in' },
     ];
 
     function renderGestures() {
@@ -1113,11 +1037,13 @@
 Nice Gestures is a collection of copy-paste SVG gesture animations. No JavaScript or Lottie files required - pure CSS animations embedded in SVG.
 
 ## Available Gestures
-- swipe-down, swipe-up (touch gestures with directional arrow)
-- drag-down, drag-up (mouse cursor gestures)
+Touch gestures (hand icon):
+- drag-down, drag-up (touch drag with directional arrow)
 - tap (finger tap with ripple)
+
+Pointer gestures (cursor icon):
+- pointer-drag-down, pointer-drag-up (mouse drag)
 - click (mouse click with ripple)
-- pinch-out, pinch-in (two-finger zoom gestures)
 
 ## Usage
 1. Copy any gesture SVG from https://nicegestures.gingersoul.co
@@ -1153,21 +1079,21 @@ https://github.com/gingersoulrecords/nicegestures`;
       const output = document.getElementById('debugOutput');
       output.value = 'Running diagnostic...\n';
 
-      const card = document.querySelector('[data-gesture="swipe-down"]');
+      const card = document.querySelector('[data-gesture="drag-down"]');
       if (!card) {
-        output.value = 'Swipe-down gesture not found';
+        output.value = 'drag-down gesture not found';
         return;
       }
 
       const preview = card.querySelector('.gesture-preview');
-      const duration = getGestureDuration('swipe-down');
+      const duration = getGestureDuration('drag-down');
       const checkPoints = [0, 10, 15, 20, 40, 55, 65, 80, 100];
 
-      let report = `SWIPE-DOWN ANIMATION\nDuration: ${duration}s\n\n`;
+      let report = `DRAG-DOWN ANIMATION\nDuration: ${duration}s\n\n`;
 
       for (const pct of checkPoints) {
         const seekTime = (pct / 100) * duration;
-        const template = document.getElementById('tpl-swipe-down');
+        const template = document.getElementById('tpl-drag-down');
         const svg = template.content.querySelector('svg').cloneNode(true);
 
         const handEl = svg.querySelector('.nges-el');

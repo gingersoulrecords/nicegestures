@@ -4,11 +4,14 @@
 Nice Gestures is a collection of copy-paste SVG gesture animations. No JavaScript or Lottie files required - pure CSS animations embedded in SVG.
 
 ## Available Gestures
-- `swipe-down`, `swipe-up` - Touch gestures with directional arrow
-- `drag-down`, `drag-up` - Mouse cursor gestures
+
+### Touch Gestures (hand icon)
+- `drag-down`, `drag-up` - Touch drag with directional arrow
 - `tap` - Finger tap with ripple effect
+
+### Pointer Gestures (cursor icon)
+- `pointer-drag-down`, `pointer-drag-up` - Mouse drag
 - `click` - Mouse click with ripple effect
-- `pinch-out`, `pinch-in` - Two-finger zoom gestures
 
 ## Usage
 1. Copy any gesture SVG from https://nicegestures.gingersoul.co
