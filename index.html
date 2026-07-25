@@ -16,6 +16,9 @@
       --border: #e2e8f0;
       --accent: #0f172a;
       --accent-text: #ffffff;
+      --indicator-opacity: 1;
+      --indicator-color: currentColor;
+      --indicator-scale: 1;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -50,56 +53,96 @@
       margin: 0 auto;
     }
 
-    /* Hero */
-    .hero {
-      text-align: center;
-      padding: 4rem 1.5rem 2rem;
-      max-width: 640px;
-      margin: 0 auto;
-    }
-    .hero-title {
-      font-size: 3rem;
-      font-weight: 800;
-      line-height: 1.1;
-      margin: 0 0 1rem;
-      letter-spacing: -0.02em;
-    }
-    .hero-tagline {
-      font-size: 1.25rem;
-      color: var(--text-muted);
-      margin: 0;
+    /* Indicator opacity/color/size overrides */
+    .gesture-indicator {
+      filter: opacity(var(--indicator-opacity));
+      r: calc(20 * var(--indicator-scale));
     }
 
-    /* Sticky Toolbar */
-    .toolbar {
+    /* Navbar */
+    .navbar {
       position: sticky;
       top: 0;
       z-index: 100;
       background: var(--bg);
       border-bottom: 1px solid var(--border);
-      padding: 0.75rem 1.5rem;
+      padding: 0 1.5rem;
+      height: 56px;
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 1.5rem;
-      flex-wrap: wrap;
+      justify-content: space-between;
+      max-width: 1200px;
+      margin: 0 auto;
     }
-    .toolbar-group {
+    .navbar-brand {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -0.01em;
+    }
+    .navbar-actions {
       display: flex;
       align-items: center;
       gap: 0.5rem;
     }
-    .toolbar-label {
-      font-size: 0.75rem;
+
+    /* Settings Dropdown */
+    .settings-dropdown {
+      position: absolute;
+      z-index: 200;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem;
+      width: 280px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+      display: none;
+    }
+    .settings-dropdown.open {
+      display: block;
+    }
+    .settings-section {
+      margin-bottom: 1rem;
+    }
+    .settings-section:last-child {
+      margin-bottom: 0;
+    }
+    .settings-label {
+      font-size: 0.7rem;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      display: block;
     }
-    .toolbar-divider {
-      width: 1px;
-      height: 24px;
-      background: var(--border);
+    .settings-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .settings-row input[type="range"] {
+      flex: 1;
+      height: 4px;
+      cursor: pointer;
+      accent-color: var(--accent);
+    }
+    .settings-row input[type="color"] {
+      width: 32px;
+      height: 32px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 2px;
+      cursor: pointer;
+      background: var(--bg);
+    }
+    .settings-value {
+      font-size: 0.75rem;
+      font-family: ui-monospace, monospace;
+      color: var(--text-muted);
+      min-width: 2.5rem;
+      text-align: right;
     }
 
     /* Pills */
@@ -154,7 +197,7 @@
     .main {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 2rem 1.5rem;
+      padding: 1.5rem;
     }
 
     /* Grid */
@@ -359,16 +402,36 @@
   </style>
 </head>
 <body>
-  <!-- Hero -->
-  <header class="hero">
-    <h1 class="hero-title">Nice Gestures</h1>
-    <p class="hero-tagline">Copy-paste SVG gesture animations for any project.<br>No JavaScript, no Lottie files.</p>
-  </header>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="/" class="navbar-brand">Nice Gestures</a>
+    <div class="navbar-actions">
+      <button class="icon-btn" id="themeToggle" title="Toggle dark mode">
+        <svg id="themeIconLight" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+        <svg id="themeIconDark" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="display:none">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+        </svg>
+      </button>
+      <a href="https://github.com/gingersoulrecords/nicegestures" target="_blank" class="icon-btn" title="View on GitHub">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+        </svg>
+      </a>
+      <button class="icon-btn" id="settingsToggle" title="Settings">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+      </button>
+    </div>
+  </nav>
 
-  <!-- Toolbar -->
-  <nav class="toolbar">
-    <div class="toolbar-group">
-      <span class="toolbar-label">Size</span>
+  <!-- Settings Dropdown -->
+  <div class="settings-dropdown" id="settingsDropdown">
+    <div class="settings-section">
+      <span class="settings-label">Copy Size</span>
       <div class="pills" id="sizePills">
         <button data-size="16">16</button>
         <button data-size="20">20</button>
@@ -378,30 +441,31 @@
         <button data-size="96">96</button>
       </div>
     </div>
-
-    <div class="toolbar-divider"></div>
-
-    <div class="toolbar-group">
-      <button class="icon-btn" id="themeToggle" title="Toggle dark mode">
-        <svg id="themeIconLight" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-        </svg>
-        <svg id="themeIconDark" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="display:none">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-        </svg>
-      </button>
+    <div class="settings-section">
+      <span class="settings-label">Indicator Opacity</span>
+      <div class="settings-row">
+        <input type="range" id="indicatorOpacity" min="0" max="100" value="100">
+        <span class="settings-value" id="indicatorOpacityVal">100%</span>
+      </div>
     </div>
-
-    <div class="toolbar-divider"></div>
-
-    <div class="toolbar-group">
-      <a href="https://github.com/gingersoulrecords/nicegestures" target="_blank" class="icon-btn" title="View on GitHub">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-        </svg>
-      </a>
+    <div class="settings-section">
+      <span class="settings-label">Indicator Size</span>
+      <div class="settings-row">
+        <input type="range" id="indicatorSize" min="50" max="200" value="100">
+        <span class="settings-value" id="indicatorSizeVal">100%</span>
+      </div>
     </div>
-  </nav>
+    <div class="settings-section">
+      <span class="settings-label">Indicator Color</span>
+      <div class="settings-row">
+        <div class="pills" id="indicatorColorPills">
+          <button data-color="stroke" class="active">Stroke</button>
+          <button data-color="custom">Custom</button>
+        </div>
+        <input type="color" id="indicatorColorPicker" value="#3b82f6" style="display:none">
+      </div>
+    </div>
+  </div>
 
   <!-- Main Grid -->
   <main class="main">
@@ -1132,6 +1196,66 @@
     </svg>
   </template>
 
+  <template id="tpl-touch-grab">
+    <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+      <style>
+        .gesture-touch-grab { --_d: var(--gesture-duration, 2.4s); --_s: var(--gesture-stroke, currentColor); --_f: var(--gesture-fill, white); }
+        @media (prefers-color-scheme: dark) { .gesture-touch-grab { --_f: var(--gesture-fill, #0f172a); } }
+        .gesture-touch-grab .gesture-fill { fill: var(--_f); stroke: none; }
+        .gesture-touch-grab .gesture-stroke { fill: none; stroke: var(--_s); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; }
+        .gesture-touch-grab .gesture-el { transform-origin: 120px 180px; }
+        .gesture-touch-grab .gesture-hand-open { }
+        .gesture-touch-grab .gesture-hand-grab { display: none; }
+        @media (prefers-reduced-motion: no-preference) {
+          .gesture-touch-grab .gesture-el { animation: gesture-touch-grab-el var(--_d) ease-in-out infinite; }
+          .gesture-touch-grab .gesture-hand-open { animation: gesture-touch-grab-open var(--_d) step-end infinite; }
+          .gesture-touch-grab .gesture-hand-grab { display: block; animation: gesture-touch-grab-closed var(--_d) step-end infinite; }
+        }
+        @keyframes gesture-touch-grab-el {
+          0%, 10% { transform: scale(1); }
+          15%, 55% { transform: scale(0.92); }
+          60%, 100% { transform: scale(1); }
+        }
+        @keyframes gesture-touch-grab-open {
+          0%, 12% { opacity: 1; }
+          13%, 57% { opacity: 0; }
+          58%, 100% { opacity: 1; }
+        }
+        @keyframes gesture-touch-grab-closed {
+          0%, 12% { opacity: 0; }
+          13%, 57% { opacity: 1; }
+          58%, 100% { opacity: 0; }
+        }
+      </style>
+      <g class="gesture-touch-grab">
+        <g class="gesture-el"><g transform="translate(120, 180) scale(5) translate(-12, -21)">
+          <!-- Open hand (hand-stop) -->
+          <g class="gesture-hand-open">
+            <path class="gesture-fill" d="M 11.659091,20.957135 C 10.430641,20.812116 9.2688425,20.204336 8.4649445,19.286157 8.0109605,18.767636 7.6116038,18.10153 5.2084783,13.854545 4.6491248,12.866014 4.5585921,12.690128 4.5476376,12.570669 4.5228935,12.300835 4.6881165,12.112811 5.025769,12.026556 c 0.1427564,-0.03647 0.1971679,-0.03839 0.3272727,-0.01158 0.085827,0.01769 0.1928674,0.0507 0.2378674,0.07336 0.045,0.02266 0.4684091,0.424267 0.9409091,0.892455 1.0228249,1.01349 1.0179049,1.010115 1.4727273,1.010115 0.2624811,0 0.2995047,-0.0067 0.4439334,-0.07979 0.1943902,-0.09844 0.3818766,-0.294624 0.4784286,-0.500623 L 9,13.254545 9.0136364,9.2987899 C 9.0263921,5.5984696 9.030339,5.3383554 9.0747592,5.2705714 9.2536036,4.9976601 9.5730322,4.9366522 9.804285,5.1312386 9.9956253,5.2922409 9.9803329,4.9969447 9.9954545,8.8227273 l 0.013637,3.4499997 0.07187,0.153273 c 0.09679,0.206421 0.234823,0.352708 0.431953,0.457776 0.526906,0.280839 1.147451,0.07855 1.401052,-0.456722 L 12,12.245455 12.013636,7.8 c 0.01272,-4.1475665 0.0168,-4.4512327 0.06082,-4.5316828 0.18233,-0.333217 0.652491,-0.3310227 0.844546,0.00394 l 0.06282,0.1095594 0.01364,4.4454545 0.01364,4.4454539 0.07187,0.153273 c 0.09679,0.206421 0.234823,0.352708 0.431952,0.457776 0.526907,0.280839 1.147452,0.07855 1.401052,-0.456722 L 15,12.245455 15.013636,8.7942431 c 0.01273,-3.2207313 0.01681,-3.4560506 0.06112,-3.5236731 0.178848,-0.2729105 0.498274,-0.3339174 0.729526,-0.1393314 0.19134,0.1610023 0.176048,-0.1342939 0.19117,3.6914887 l 0.01364,3.4499997 0.07187,0.153273 c 0.09679,0.206421 0.234823,0.352708 0.431952,0.457776 0.526907,0.280839 1.147452,0.07855 1.401052,-0.456722 L 18,12.245455 18.013636,9.8045455 c 0.01488,-2.6639368 0.0054,-2.512788 0.167864,-2.6640925 0.207933,-0.193602 0.561247,-0.1420546 0.725288,0.1058165 l 0.07503,0.1133741 0.008,4.3110874 c 0.0055,2.923452 -0.0015,4.429596 -0.02153,4.679269 -0.09965,1.240689 -0.594564,2.319582 -1.457517,3.177333 -0.73687,0.732427 -1.625846,1.193043 -2.688079,1.392806 -0.223297,0.04199 -0.445594,0.04958 -1.609091,0.05493 -0.7425,0.0034 -1.442045,-0.0047 -1.554545,-0.01794 z"/>
+            <g class="gesture-stroke">
+              <path d="M8 13v-7.5a1.5 1.5 0 0 1 3 0v6.5"/>
+              <path d="M11 5.5v-2a1.5 1.5 0 1 1 3 0v8.5"/>
+              <path d="M14 5.5a1.5 1.5 0 0 1 3 0v6.5"/>
+              <path d="M17 7.5a1.5 1.5 0 0 1 3 0v8.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47"/>
+            </g>
+          </g>
+          <!-- Grabbing hand (hand-grab) -->
+          <g class="gesture-hand-grab">
+            <path class="gesture-fill" d="M 11.765496,18.96579 C 10.463702,18.849515 9.2244679,18.198851 8.3837351,17.190186 8.029179,16.764809 7.7072656,16.241447 6.4997745,14.127273 5.2584259,11.953818 4.5781827,10.734575 4.5500348,10.632632 c -0.058033,-0.21018 0.064475,-0.431987 0.3034045,-0.54933 0.1207601,-0.05931 0.1894456,-0.07421 0.3420152,-0.07421 0.3582412,0 0.3624815,0.0031 1.3227273,0.953906 0.4725,0.467876 0.9020455,0.876179 0.9545455,0.90734 0.2758568,0.163733 0.6510422,0.181854 0.9536345,0.04606 0.1923428,-0.08632 0.4112204,-0.303339 0.5001625,-0.49592 C 8.9859265,11.291856 8.9864632,11.276662 9,9.3409091 l 0.013636,-1.95 0.068259,-0.121903 C 9.169132,7.1132114 9.3210512,7.0237856 9.4995196,7.0231759 c 0.072236,-2.467e-4 0.1581453,0.013324 0.1909091,0.030156 0.07706,0.039591 0.2055022,0.1588838 0.2460087,0.2284859 0.022561,0.038767 0.035724,0.4726615 0.045505,1.5 0.013606,1.4291262 0.01447,1.4472112 0.076466,1.6009542 0.08791,0.218004 0.26936,0.409805 0.490676,0.518667 0.168839,0.08305 0.201499,0.08947 0.455041,0.08947 0.246604,0 0.288904,-0.0077 0.435298,-0.07962 0.20651,-0.101395 0.381371,-0.276256 0.474117,-0.474117 L 11.986364,10.281818 12,8.3318182 c 0.01516,-2.1678652 0.0023,-2.0278492 0.202569,-2.2036973 0.21608,-0.1897205 0.558279,-0.1265159 0.709593,0.1310627 0.05472,0.093153 0.05634,0.1402059 0.06966,2.0317255 l 0.01364,1.9363639 0.06283,0.155499 c 0.08813,0.218105 0.269564,0.409844 0.490801,0.518667 0.168839,0.08305 0.201499,0.08947 0.455041,0.08947 0.246604,0 0.288904,-0.0077 0.435298,-0.07962 0.20651,-0.101395 0.381371,-0.276256 0.474117,-0.474117 L 14.986364,10.281818 15,8.8363636 15.01364,7.3909091 15.0819,7.2690061 c 0.08724,-0.1557947 0.239156,-0.2452205 0.417624,-0.2458302 0.07224,-2.467e-4 0.158145,0.013324 0.190909,0.030156 0.07706,0.039591 0.205502,0.1588838 0.246009,0.2284859 0.02256,0.038767 0.03572,0.4726615 0.0455,1.5 0.01361,1.4291262 0.01447,1.4472112 0.07647,1.6009542 0.08791,0.218004 0.26936,0.409805 0.490676,0.518667 0.168839,0.08305 0.201499,0.08947 0.455041,0.08947 0.246604,0 0.288904,-0.0077 0.435298,-0.07962 0.206921,-0.101597 0.381725,-0.276638 0.473473,-0.474117 0.06578,-0.141583 0.07365,-0.19526 0.08875,-0.6053592 0.01834,-0.4979327 0.03566,-0.5585997 0.200918,-0.7036972 0.221485,-0.1944657 0.563845,-0.1250345 0.717022,0.1454127 l 0.06133,0.1082845 4.49e-4,2.4736032 c 4.83e-4,2.66657 -0.0052,2.797123 -0.146251,3.351872 -0.527956,2.076626 -2.290076,3.570086 -4.436452,3.760054 -0.362981,0.03213 -2.268676,0.031 -2.633171,-0.0016 z"/>
+            <g class="gesture-stroke">
+              <path d="M8 11v-3.5a1.5 1.5 0 0 1 3 0v2.5"/>
+              <path d="M11 9.5v-3a1.5 1.5 0 0 1 3 0v3.5"/>
+              <path d="M14 7.5a1.5 1.5 0 0 1 3 0v2.5"/>
+              <path d="M17 9.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7l-.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47"/>
+            </g>
+          </g>
+        </g></g>
+      </g>
+    </svg>
+  </template>
+
+  <script src="https://cdn.jsdelivr.net/npm/@floating-ui/core@1.6.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.6.3"></script>
   <script>
     // Debug mode: localhost or ?debug=1
     const isDebugMode = location.hostname === 'localhost' ||
@@ -1169,6 +1293,7 @@
       { id: 'touch-tap', name: 'touch-tap', template: 'tpl-touch-tap' },
       { id: 'touch-double-tap', name: 'touch-double-tap', template: 'tpl-touch-double-tap' },
       { id: 'touch-long-press', name: 'touch-long-press', template: 'tpl-touch-long-press' },
+      { id: 'touch-grab', name: 'touch-grab', template: 'tpl-touch-grab' },
       { id: 'touch-drag-down', name: 'touch-drag-down', template: 'tpl-touch-drag-down' },
       { id: 'touch-drag-up', name: 'touch-drag-up', template: 'tpl-touch-drag-up' },
       { id: 'touch-drag-left', name: 'touch-drag-left', template: 'tpl-touch-drag-left' },
@@ -1244,6 +1369,13 @@
 
       container.innerHTML = '';
       container.appendChild(svg);
+
+      // Apply indicator color to the new SVG (opacity is handled by CSS variable)
+      if (typeof indicatorColor !== 'undefined' && indicatorColor !== 'stroke') {
+        svg.querySelectorAll('.gesture-indicator').forEach(indicator => {
+          indicator.style.fill = indicatorColor;
+        });
+      }
     }
 
     function seekSvg(container, gestureId, percent) {
@@ -1488,6 +1620,104 @@ https://github.com/gingersoulrecords/nicegestures`;
     }
 
 
+    // Settings dropdown with Floating UI
+    const settingsToggle = document.getElementById('settingsToggle');
+    const settingsDropdown = document.getElementById('settingsDropdown');
+    let indicatorOpacity = 1;
+    let indicatorColor = 'stroke'; // 'stroke' or custom hex
+
+    function updateDropdownPosition() {
+      FloatingUIDOM.computePosition(settingsToggle, settingsDropdown, {
+        placement: 'bottom-end',
+        middleware: [
+          FloatingUIDOM.offset(8),
+          FloatingUIDOM.flip(),
+          FloatingUIDOM.shift({ padding: 8 })
+        ]
+      }).then(({ x, y }) => {
+        Object.assign(settingsDropdown.style, {
+          left: `${x}px`,
+          top: `${y}px`
+        });
+      });
+    }
+
+    settingsToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = settingsDropdown.classList.toggle('open');
+      if (isOpen) {
+        updateDropdownPosition();
+      }
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!settingsDropdown.contains(e.target) && e.target !== settingsToggle) {
+        settingsDropdown.classList.remove('open');
+      }
+    });
+
+    // Indicator opacity control
+    const opacitySlider = document.getElementById('indicatorOpacity');
+    const opacityVal = document.getElementById('indicatorOpacityVal');
+
+    opacitySlider.addEventListener('input', (e) => {
+      indicatorOpacity = e.target.value / 100;
+      opacityVal.textContent = e.target.value + '%';
+      applyIndicatorStyles();
+    });
+
+    // Indicator size control
+    const sizeSlider = document.getElementById('indicatorSize');
+    const sizeVal = document.getElementById('indicatorSizeVal');
+    let indicatorScale = 1;
+
+    sizeSlider.addEventListener('input', (e) => {
+      indicatorScale = e.target.value / 100;
+      sizeVal.textContent = e.target.value + '%';
+      document.documentElement.style.setProperty('--indicator-scale', indicatorScale);
+    });
+
+    // Indicator color control
+    const colorPills = document.getElementById('indicatorColorPills');
+    const colorPicker = document.getElementById('indicatorColorPicker');
+
+    colorPills.addEventListener('click', (e) => {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+
+      colorPills.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      if (btn.dataset.color === 'stroke') {
+        indicatorColor = 'stroke';
+        colorPicker.style.display = 'none';
+      } else {
+        indicatorColor = colorPicker.value;
+        colorPicker.style.display = 'block';
+      }
+      applyIndicatorStyles();
+    });
+
+    colorPicker.addEventListener('input', (e) => {
+      indicatorColor = e.target.value;
+      applyIndicatorStyles();
+    });
+
+    function applyIndicatorStyles() {
+      // Set CSS variables on root - this affects all indicators via CSS
+      document.documentElement.style.setProperty('--indicator-opacity', indicatorOpacity);
+
+      // For color, we need to update each indicator since fill is set inline in SVG styles
+      document.querySelectorAll('.gesture-indicator').forEach(indicator => {
+        if (indicatorColor === 'stroke') {
+          indicator.style.fill = '';
+        } else {
+          indicator.style.fill = indicatorColor;
+        }
+      });
+    }
+
     // Initial render
     renderGestures();
 
@@ -1496,6 +1726,9 @@ https://github.com/gingersoulrecords/nicegestures`;
     document.querySelectorAll('.gesture-preview').forEach(preview => {
       preview.style.setProperty('--preview-size', initialPreviewSize);
     });
+
+    // Apply indicator styles after render
+    applyIndicatorStyles();
   </script>
 </body>
 </html>
