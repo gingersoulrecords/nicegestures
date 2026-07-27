@@ -16,7 +16,7 @@
       --border: #e2e8f0;
       --accent: #0f172a;
       --accent-text: #ffffff;
-      --indicator-opacity: 1;
+      --indicator-opacity: 0.35;
       --indicator-color: currentColor;
       --indicator-scale: 1;
     }
@@ -54,8 +54,10 @@
     }
 
     /* Indicator opacity/color/size overrides */
-    .gesture-indicator {
+    .gesture-indicator, .gesture-ring {
       filter: opacity(var(--indicator-opacity));
+    }
+    .gesture-indicator {
       r: calc(20 * var(--indicator-scale));
     }
 
@@ -548,8 +550,8 @@
         }
         @keyframes gesture-touch-drag-down-ind {
           0%, 10% { transform: translateY(0) scale(0); opacity: 0; }
-          20% { transform: translateY(0) scale(1); opacity: 0.35; }
-          55% { transform: translateY(70px) scale(1); opacity: 0.35; }
+          20% { transform: translateY(0) scale(1); opacity: 1; }
+          55% { transform: translateY(70px) scale(1); opacity: 1; }
           65% { transform: translateY(70px) scale(1); opacity: 0; }
           100% { transform: translateY(0) scale(0); opacity: 0; }
         }
@@ -591,8 +593,8 @@
         }
         @keyframes gesture-touch-drag-up-ind {
           0%, 10% { transform: translateY(0) scale(0); opacity: 0; }
-          20% { transform: translateY(0) scale(1); opacity: 0.35; }
-          55% { transform: translateY(-70px) scale(1); opacity: 0.35; }
+          20% { transform: translateY(0) scale(1); opacity: 1; }
+          55% { transform: translateY(-70px) scale(1); opacity: 1; }
           65% { transform: translateY(-70px) scale(1); opacity: 0; }
           100% { transform: translateY(0) scale(0); opacity: 0; }
         }
@@ -633,8 +635,8 @@
         }
         @keyframes gesture-pointer-drag-down-ind {
           0%, 10% { transform: translateY(0) scale(0); opacity: 0; }
-          20% { transform: translateY(0) scale(1); opacity: 0.35; }
-          55% { transform: translateY(70px) scale(1); opacity: 0.35; }
+          20% { transform: translateY(0) scale(1); opacity: 1; }
+          55% { transform: translateY(70px) scale(1); opacity: 1; }
           65% { transform: translateY(70px) scale(1); opacity: 0; }
           100% { transform: translateY(0) scale(0); opacity: 0; }
         }
@@ -674,8 +676,8 @@
         }
         @keyframes gesture-pointer-drag-up-ind {
           0%, 10% { transform: translateY(0) scale(0); opacity: 0; }
-          20% { transform: translateY(0) scale(1); opacity: 0.35; }
-          55% { transform: translateY(-70px) scale(1); opacity: 0.35; }
+          20% { transform: translateY(0) scale(1); opacity: 1; }
+          55% { transform: translateY(-70px) scale(1); opacity: 1; }
           65% { transform: translateY(-70px) scale(1); opacity: 0; }
           100% { transform: translateY(0) scale(0); opacity: 0; }
         }
@@ -716,8 +718,8 @@
         }
         @keyframes gesture-touch-drag-left-ind {
           0%, 10% { transform: translateX(0) scale(0); opacity: 0; }
-          20% { transform: translateX(0) scale(1); opacity: 0.35; }
-          55% { transform: translateX(-70px) scale(1); opacity: 0.35; }
+          20% { transform: translateX(0) scale(1); opacity: 1; }
+          55% { transform: translateX(-70px) scale(1); opacity: 1; }
           65% { transform: translateX(-70px) scale(1); opacity: 0; }
           100% { transform: translateX(0) scale(0); opacity: 0; }
         }
@@ -759,8 +761,8 @@
         }
         @keyframes gesture-touch-drag-right-ind {
           0%, 10% { transform: translateX(0) scale(0); opacity: 0; }
-          20% { transform: translateX(0) scale(1); opacity: 0.35; }
-          55% { transform: translateX(70px) scale(1); opacity: 0.35; }
+          20% { transform: translateX(0) scale(1); opacity: 1; }
+          55% { transform: translateX(70px) scale(1); opacity: 1; }
           65% { transform: translateX(70px) scale(1); opacity: 0; }
           100% { transform: translateX(0) scale(0); opacity: 0; }
         }
@@ -801,8 +803,8 @@
         }
         @keyframes gesture-pointer-drag-left-ind {
           0%, 10% { transform: translateX(0) scale(0); opacity: 0; }
-          20% { transform: translateX(0) scale(1); opacity: 0.35; }
-          55% { transform: translateX(-70px) scale(1); opacity: 0.35; }
+          20% { transform: translateX(0) scale(1); opacity: 1; }
+          55% { transform: translateX(-70px) scale(1); opacity: 1; }
           65% { transform: translateX(-70px) scale(1); opacity: 0; }
           100% { transform: translateX(0) scale(0); opacity: 0; }
         }
@@ -842,8 +844,8 @@
         }
         @keyframes gesture-pointer-drag-right-ind {
           0%, 10% { transform: translateX(0) scale(0); opacity: 0; }
-          20% { transform: translateX(0) scale(1); opacity: 0.35; }
-          55% { transform: translateX(70px) scale(1); opacity: 0.35; }
+          20% { transform: translateX(0) scale(1); opacity: 1; }
+          55% { transform: translateX(70px) scale(1); opacity: 1; }
           65% { transform: translateX(70px) scale(1); opacity: 0; }
           100% { transform: translateX(0) scale(0); opacity: 0; }
         }
@@ -939,8 +941,8 @@
         }
         @keyframes gesture-touch-tap-ind {
           0%, 11% { transform: scale(0.5); opacity: 0; }
-          12% { transform: scale(0.5); opacity: 0.35; }
-          25% { transform: scale(1); opacity: 0.2; }
+          12% { transform: scale(0.5); opacity: 1; }
+          25% { transform: scale(1); opacity: 0.57; }
           35% { transform: scale(1); opacity: 0; }
           100% { transform: scale(1); opacity: 0; }
         }
@@ -981,8 +983,8 @@
         }
         @keyframes gesture-pointer-click-ind {
           0%, 11% { transform: scale(0.5); opacity: 0; }
-          12% { transform: scale(0.5); opacity: 0.35; }
-          25% { transform: scale(1); opacity: 0.2; }
+          12% { transform: scale(0.5); opacity: 1; }
+          25% { transform: scale(1); opacity: 0.57; }
           35% { transform: scale(1); opacity: 0; }
           100% { transform: scale(1); opacity: 0; }
         }
@@ -1018,11 +1020,11 @@
         }
         @keyframes gesture-touch-double-tap-ind {
           0%, 9% { transform: scale(0.5); opacity: 0; }
-          10% { transform: scale(0.5); opacity: 0.35; }
-          15% { transform: scale(0.8); opacity: 0.15; }
+          10% { transform: scale(0.5); opacity: 1; }
+          15% { transform: scale(0.8); opacity: 0.43; }
           19% { transform: scale(0.5); opacity: 0; }
-          20% { transform: scale(0.5); opacity: 0.35; }
-          30% { transform: scale(1); opacity: 0.2; }
+          20% { transform: scale(0.5); opacity: 1; }
+          30% { transform: scale(1); opacity: 0.57; }
           40% { transform: scale(1); opacity: 0; }
           100% { transform: scale(1); opacity: 0; }
         }
@@ -1063,11 +1065,11 @@
         }
         @keyframes gesture-pointer-double-click-ind {
           0%, 9% { transform: scale(0.5); opacity: 0; }
-          10% { transform: scale(0.5); opacity: 0.35; }
-          15% { transform: scale(0.8); opacity: 0.15; }
+          10% { transform: scale(0.5); opacity: 1; }
+          15% { transform: scale(0.8); opacity: 0.43; }
           19% { transform: scale(0.5); opacity: 0; }
-          20% { transform: scale(0.5); opacity: 0.35; }
-          30% { transform: scale(1); opacity: 0.2; }
+          20% { transform: scale(0.5); opacity: 1; }
+          30% { transform: scale(1); opacity: 0.57; }
           40% { transform: scale(1); opacity: 0; }
           100% { transform: scale(1); opacity: 0; }
         }
@@ -1113,15 +1115,15 @@
         }
         @keyframes gesture-touch-long-press-ind {
           0%, 11% { transform: scale(0.5); opacity: 0; }
-          12% { transform: scale(0.5); opacity: 0.35; }
-          55% { transform: scale(0.5); opacity: 0.35; }
+          12% { transform: scale(0.5); opacity: 1; }
+          55% { transform: scale(0.5); opacity: 1; }
           65% { transform: scale(1); opacity: 0; }
           100% { transform: scale(1); opacity: 0; }
         }
         @keyframes gesture-touch-long-press-ring {
           0%, 11% { stroke-dashoffset: 126; opacity: 0; }
-          12% { stroke-dashoffset: 126; opacity: 0.5; }
-          55% { stroke-dashoffset: 0; opacity: 0.5; }
+          12% { stroke-dashoffset: 126; opacity: 1; }
+          55% { stroke-dashoffset: 0; opacity: 1; }
           65% { stroke-dashoffset: 0; opacity: 0; }
           100% { stroke-dashoffset: 126; opacity: 0; }
         }
@@ -1173,15 +1175,15 @@
         }
         @keyframes gesture-pointer-long-press-ind {
           0%, 11% { transform: scale(0.5); opacity: 0; }
-          12% { transform: scale(0.5); opacity: 0.35; }
-          55% { transform: scale(0.5); opacity: 0.35; }
+          12% { transform: scale(0.5); opacity: 1; }
+          55% { transform: scale(0.5); opacity: 1; }
           65% { transform: scale(1); opacity: 0; }
           100% { transform: scale(1); opacity: 0; }
         }
         @keyframes gesture-pointer-long-press-ring {
           0%, 11% { stroke-dashoffset: 126; opacity: 0; }
-          12% { stroke-dashoffset: 126; opacity: 0.5; }
-          55% { stroke-dashoffset: 0; opacity: 0.5; }
+          12% { stroke-dashoffset: 126; opacity: 1; }
+          55% { stroke-dashoffset: 0; opacity: 1; }
           65% { stroke-dashoffset: 0; opacity: 0; }
           100% { stroke-dashoffset: 126; opacity: 0; }
         }
